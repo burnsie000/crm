@@ -45,7 +45,10 @@ def sign_up():
         password2 = request.form.get('password2')
         company = request.form.get('company')
         
-        if len(email) < 4:
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('Email already exists!', category='error')
+        elif len(email) < 4:
             flash('Email must be greater than 3 characters.', category='error')
         elif len(firstname) < 2:
             flash('First name must be greater than 1 characters.', category='error')
