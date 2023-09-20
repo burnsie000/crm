@@ -5,11 +5,22 @@ from os import path
 from flask import Flask
 from os import path
 from my_package.__init__ import create_app
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
 app = create_app()
 # to stop caching static file
+
+from my_package.models import *
+
+login_manager = LoginManager()
+login_manager.login_view = 'login.html'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 

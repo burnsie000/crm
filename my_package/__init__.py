@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -11,7 +12,6 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     db.init_app(app)
-   
 
     with app.app_context():
         from my_package.models import User, CRM  # Move the import statement here
