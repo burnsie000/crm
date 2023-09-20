@@ -6,7 +6,7 @@ from flask import Flask
 from os import path
 from my_package.__init__ import create_app
 from flask_login import LoginManager
-
+from flask_login import current_user
 app = Flask(__name__)
 
 app = create_app()
@@ -15,7 +15,7 @@ app = create_app()
 from my_package.models import *
 
 login_manager = LoginManager()
-login_manager.login_view = 'login.html'
+login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 @login_manager.user_loader
@@ -33,27 +33,15 @@ from my_package.views import views
 def home ():
     techs = ['HTML', 'CSS', 'Flask', 'Python']
     name = '30 Days Of Python Programming'
-    return render_template('home.html', techs=techs, name = name, title = 'Home')
+    return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
-@app.route('/about')
-def about():
-    name = '30 Days Of Python Programming'
-    return render_template('about.html', name = name, title = 'About Us')
+@app.route('/CRM')
+def crm ():
+    return render_template('crm.html', user=current_user)
 
-@app.route('/result')
-def result():
-    return render_template('result.html')
-
-@app.route('/post', methods= ['GET','POST'])
-def post():
-    name = 'Text Analyzer'
-    if request.method == 'GET':
-         return render_template('post.html', name = name, title = name)
-    if request.method =='POST':
-        content = request.form['content']
-        print(content)
-        return redirect(url_for('result'))
-
+@app.route('/pricing')
+def pricing ():
+    return render_template('pricing.html', user=current_user)
 
 if __name__ == '__main__':
     # for deployment

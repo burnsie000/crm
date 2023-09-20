@@ -40,19 +40,26 @@
                 <a class="nav-link active" href="{{ url_for('home') }}">Why X CRM?</a>
             </li>
             <li class="nav-list">
-                <a class="nav-link active" href="{{ url_for('about') }}">Pricing</a>
+                <a class="nav-link active" href="{{ url_for('pricing') }}">Pricing</a>
             </li>
+            
+            {% if user.is_authenticated %}
             <li class="nav-list">
-                <a class="nav-link active" href="/auth/sign-up">
-                    Sign Up
-                </a>
-            </li>
-            <li class="nav-list">
-                <a class='nav-link active' href="/auth/login">Log In</a>
+              <a class="nav-link active" href="/CRM">CRM</a>
             </li>
             <li class="nav-list">
               <a class='nav-link active' href="/auth/logout">Log Out</a>
-          </li>
+            </li>
+            {% else %}
+            <li class="nav-list">
+              <a class='nav-link active' href="/auth/login">Log In</a>
+            </li>
+            <li class="nav-list">
+              <a class="nav-link active" href="/auth/sign-up">
+                  Sign Up
+              </a>
+            </li>
+            {% endif %}
         </ul>
       </div>
     </header>
