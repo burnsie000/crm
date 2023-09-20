@@ -1,0 +1,641 @@
+/* === GENERAL === */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === css variables === */
+:root {
+    --header-bg-color: rgb(0, 0, 0);
+    --textarea-bg-color: rgb(14, 14, 14);
+    --body-bg-color: rgb(14, 14, 14);
+    --nav-link-color: #34dfff;
+}
+
+/* === body style === */
+body {
+    background: rgb(14, 14, 14);
+    margin: auto;
+    line-height: 1.75;
+    font-weight: 900;
+    word-spacing: 1.5px;
+    font-family: 'Lato',sans-serif;
+    font-weight: 300;
+}
+
+/* === header style === */
+header {
+    background: rgb(0, 0, 0);
+}
+/* === title and subtitle style === */
+h1,
+h2 {
+    margin: 20px;
+    font-weight: 300;
+    font-family: Nunito;
+}
+
+/* === header menu style === */
+
+.menu-container {
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: rgb(221, 215, 215);
+    padding: 25px;
+}
+
+.nav-lists {
+    display: flex;
+}
+
+.nav-list {
+    list-style: none;
+    margin: 0 5px;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 22px;
+    padding: 0 5px;
+    color: #ff4d00;
+    font-weight: 400;
+}
+
+.brand-name {
+    font-size: 28px;
+    font-weight: bolder;
+}
+/* === paragraph text style === */
+p {
+    font-size: 22px;
+    font-weight: 300;
+}
+
+/* === main style === */
+main {
+    width: 90%;
+    margin: auto;
+}
+
+/* === container div inside main style === */
+
+.container {
+    background: rgb(14, 14, 14);
+    padding: 20px;
+    padding-top: 80px;
+    margin: auto;
+}
+
+.tech-lists {
+    margin: 10px auto;
+    text-align: left;
+    font-size: 20px;
+}
+.tech {
+    list-style: none;
+}
+/* === button style === */
+.btn {
+    width: 150px;
+    height: 50px;
+    background: var(--header-bg-color);
+    color: var(--nav-link-color);
+    font-size: 20px;
+    margin: 5px;
+    border: 1px solid var(--header-bg-color);
+    font-family: Lato;
+    cursor: pointer;
+}
+
+.btn:focus {
+    outline: 2px solid #2a70a5;
+    cursor: pointer;
+}
+/* === textarea style === */
+textarea {
+    width: 65%;
+    margin: auto;
+    padding: 10px 15px;
+    outline: 2px solid rgba(207, 203, 203, 0.25);
+    border: none;
+    font-size: 18px;
+    font-family: Lato;
+    font-weight: 300;
+}
+
+textarea:focus {
+    border: none;
+    outline: 2px solid rgba(74, 119, 153, 0.45);
+    background: var(--textarea-bg-color);
+    font-size: 18px;
+    caret-color: var(--header-bg-color);
+    font-family: Lato;
+    font-weight: 300;
+
+}
+
+/* === responsiveness === */
+@media (max-width:600px) {
+
+    .menu-container {
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    h1{
+        font-size: 22px;
+    }
+
+    .nav-lists {
+        flex-direction: column;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+}
+
+h1 {
+    color: #ff4d00;
+}
+
+h2 {
+    color: #34dfff;
+}
+
+/* RGB BUTTON */
+button {
+    height: 6em;
+    width: 14em;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 4.5em;
+    left: 8.5em;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 3.75em;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+  button:before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    background: repeating-linear-gradient(
+      to right,
+      #fd004c 2.62em,
+      #fe9000 5.25em,
+      #fff020 7.87em,
+      #3edf4b 10.5em,
+      #3363ff 15.75em,
+      #fd004c 18.75em
+    );
+    background-size: 125em;
+  }
+  button:after {
+    content: "Start Your 30-Day Trial ";
+    position: absolute;
+    background-color: rgb(14, 14, 14);
+    color: repeating-linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    height: 85%;
+    width: 93%;
+    top: 7.5%;
+    left: 3.5%;
+    border-radius: 3.75em;
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.3em;
+    display: grid;
+    place-items: center;
+  }
+  button:hover:before {
+    background-position: -106.25em 0;
+    transition: 10s linear;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+  /* SIGN UP PAGE */
+  
+  .emboss-txt {
+    margin: auto;
+    font-weight: 600;
+    font-size: 120px;
+    display: block;
+    text-align: center;
+    width: 8em;
+    position: relative;
+    content: "Sign Up";
+    letter-spacing: 5px;
+    color:rgb(207,207,207);
+    text-shadow: 
+    /*3D layers*/
+    0px 0px 1px rgb(167,167,167),
+    0px 1px 1px rgb(167,167,167),
+    0px 2px 1px rgb(167,167,167),
+
+    1px 1px 1px rgb(167,167,167),
+    1px 2px 1px rgb(167,167,167),
+    1px 3px 1px rgb(167,167,167),
+
+    2px 2px 1px rgb(167,167,167),
+    2px 3px 1px rgb(167,167,167),
+    2px 4px 1px rgb(167,167,167),
+    /*long soft bottom*/
+    1px 10px 30px rgba(0,0,0,0.8),
+    1px 10px 70px rgba(0,0,0,0.8),
+
+    /*short soft bottom*/
+    0px 5px 5px rgba(0,0,0,0.8),
+
+    /*left shadow*/
+    -5px 5px 20px rgba(0,0,0,0.8),
+    /*right shadow*/
+    5px 5px 20px rgba(0,0,0,0.8)
+    
+    /* white light */
+    1px 1px 120px rgba(255, 255, 255, 0.5);
+    }
+    .emboss-txt::after {
+        content: "Sign Up";
+        margin: auto;
+        margin-top: -1.75em;
+        font-weight: 600;
+        display: block;
+        text-align: center;
+        top: 0;
+        left: 0;
+        width: 8em;
+        font-size: 120px;
+        letter-spacing: 5px;
+        position: absolute;
+        top:0;
+        left:0;
+        text-shadow: 0px 0px 100px rgba(11,124,199,0.5);
+        animation: cycle 10s linear infinite;
+      }
+
+    @keyframes cycle {
+    0% { text-shadow: 0px 0px 100px rgba(11,124,199,0.5);}
+    20% { text-shadow: 0px 0px 100px rgba(168,11,199,0.5);}
+    40% { text-shadow: 0px 0px 100px rgba(11,199,96,0.5);}
+    60% { text-shadow: 0px 0px 100px rgba(199,11,11,0.5);}
+    80% { text-shadow: 0px 0px 100px rgba(199,96,11,0.5);}
+    }
+
+  .signup {
+    margin: auto;
+    font-weight: 600;
+    font-size: 60px;
+    display: block;
+    text-align: center;
+    margin-top: 3.5em;
+    width: 8em;
+    position: relative;
+  }
+
+  .form-group {
+    margin: auto;
+    top: -2;
+    scale: 1.2;
+    color: #34dfff;
+    display: block;
+    width: 20em;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .form-control {
+    background-color: rgb(14, 14, 14);
+    border-color: #ff4d00;
+    border-style: solid;
+    border-width: 1px;
+    scale: 1.2;
+    position: relative;
+    margin: auto;
+    color: #34dfff;
+    width: 15em;
+    font-size: 12px;
+    height: 1.5em;
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  ::placeholder {
+    color: #34dfff;
+    opacity: 1;
+  }
+
+  .signup-label {
+    margin: auto;
+    display: block;
+    margin-left: 3.5em;
+    margin-bottom: 10px;
+  }
+  
+  .signup-button {
+    height: 6em;
+    width: 14em;
+    display: block;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    margin-top: 5em;
+    margin-left: 1em;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 3.75em;
+    border-style: blur(25px) solid;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+  .signup-button:before {
+    content: "";
+    margin: auto;
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-style: blur(25px) solid;
+    position: absolute;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    background: repeating-linear-gradient(
+      to right,
+      #fd004c 2.62em,
+      #fe9000 5.25em,
+      #fff020 7.87em,
+      #3edf4b 10.5em,
+      #3363ff 15.75em,
+      #fd004c 18.75em
+    );
+    background-size: 125em;
+  }
+  .signup-button:after {
+    margin: auto;
+    content: "Sign Up";
+    display: block;
+    position: absolute;
+    border-style: blur(25px) solid;
+    background-color: rgb(14, 14, 14);
+    color: repeating-linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    height: 85%;
+    width: 93%;
+    top: 7.5%;
+    left: 3.5%;
+    border-radius: 3.75em;
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.3em;
+    display: grid;
+    place-items: center;
+  }
+  .signup-button:hover:before {
+    margin: auto;
+    background-position: -106.25em 0;
+    transition: 10s linear;
+    display: block;
+    border-style: blur(25px) solid;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+  .login-button {
+    height: 6em;
+    width: 14em;
+    display: block;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    margin-top: 5em;
+    margin-left: 1.5em;
+    border-style: blur(25px) solid;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 3.75em;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+  .login-button:before {
+    content: "";
+    margin: auto;
+    display: block;
+    height: 100%;
+    border-style: blur(25px) solid;
+    width: 100%;
+    position: absolute;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    background: repeating-linear-gradient(
+      to right,
+      #fd004c 2.62em,
+      #fe9000 5.25em,
+      #fff020 7.87em,
+      #3edf4b 10.5em,
+      #3363ff 15.75em,
+      #fd004c 18.75em
+    );
+    background-size: 125em;
+  }
+  .login-button:after {
+    margin: auto;
+    content: "Log In";
+    display: block;
+    border-style: blur(25px) solid;
+    position: absolute;
+    background-color: rgb(14, 14, 14);
+    color: repeating-linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+    height: 85%;
+    width: 93%;
+    top: 7.5%;
+    left: 3.5%;
+    border-radius: 3.75em;
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.3em;
+    display: grid;
+    place-items: center;
+  }
+  .login-button:hover:before {
+    margin: auto;
+    background-position: -106.25em 0;
+    transition: 10s linear;
+    display: block;
+    border-style: blur(25px) solid;
+    color: linear-gradient(
+        to right,
+        #fd004c 2.62em,
+        #fe9000 5.25em,
+        #fff020 7.87em,
+        #3edf4b 10.5em,
+        #3363ff 15.75em,
+        #fd004c 18.75em
+      );
+  }
+
+  .emboss-txt-login {
+    margin: auto;
+    font-weight: 600;
+    font-size: 120px;
+    display: block;
+    text-align: center;
+    width: 8em;
+    position: relative;
+    content: "Log In";
+    letter-spacing: 5px;
+    color:rgb(207,207,207);
+    text-shadow: 
+    /*3D layers*/
+    0px 0px 1px rgb(167,167,167),
+    0px 1px 1px rgb(167,167,167),
+    0px 2px 1px rgb(167,167,167),
+
+    1px 1px 1px rgb(167,167,167),
+    1px 2px 1px rgb(167,167,167),
+    1px 3px 1px rgb(167,167,167),
+
+    2px 2px 1px rgb(167,167,167),
+    2px 3px 1px rgb(167,167,167),
+    2px 4px 1px rgb(167,167,167),
+    /*long soft bottom*/
+    1px 10px 30px rgba(0,0,0,0.8),
+    1px 10px 70px rgba(0,0,0,0.8),
+
+    /*short soft bottom*/
+    0px 5px 5px rgba(0,0,0,0.8),
+
+    /*left shadow*/
+    -5px 5px 20px rgba(0,0,0,0.8),
+    /*right shadow*/
+    5px 5px 20px rgba(0,0,0,0.8)
+    
+    /* white light */
+    1px 1px 120px rgba(255, 255, 255, 0.5);
+    }
+    .emboss-txt-login::after {
+        content: "Log In";
+        margin: auto;
+        margin-top: -1.75em;
+        font-weight: 600;
+        display: block;
+        text-align: center;
+        top: 0;
+        left: 0;
+        width: 8em;
+        font-size: 120px;
+        letter-spacing: 5px;
+        position: absolute;
+        top:0;
+        left:0;
+        text-shadow: 0px 0px 100px rgba(11,124,199,0.5);
+        animation: cycle 10s linear infinite;
+      }
+
+    @keyframes cycle {
+    0% { text-shadow: 0px 0px 100px rgba(11,124,199,0.5);}
+    20% { text-shadow: 0px 0px 100px rgba(168,11,199,0.5);}
+    40% { text-shadow: 0px 0px 100px rgba(11,199,96,0.5);}
+    60% { text-shadow: 0px 0px 100px rgba(199,11,11,0.5);}
+    80% { text-shadow: 0px 0px 100px rgba(199,96,11,0.5);}
+    }
+
+    .login {
+        margin: auto;
+        font-weight: 600;
+        font-size: 60px;
+        display: block;
+        text-align: center;
+        margin-top: 3.5em;
+        width: 8em;
+        position: relative;
+      }
+      
+      

@@ -1,0 +1,23 @@
+{% extends 'layout.html' %} {% block content %}
+<form method="POST" class="log-in">
+    <div class="emboss-txt-login">
+        <h1 position="'center" class="login"></h1>
+    </div>
+    <div class="form-group">
+        <label for="email" class="signup-label"> Email Address</label>
+        <input type="email" class="form-control" id="email" name="email" 
+        placeholder=" Enter Email"/>
+    </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="signup-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" 
+        placeholder=" Password"/>
+    </div>
+    <div class="form-group">
+        <button class="login-button">
+            Start Your 30-Day Trial 
+        </button>
+    </div> 
+</form>
+{% endblock %}

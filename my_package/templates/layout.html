@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Nunito:300,400|Raleway:300,400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    {% if title %}
+    <title>X CRM - {{ title}}</title>
+    {% else %}
+    <title>X CRM</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <header>
+      <div class="menu-container">
+        <div>
+          <a class="brand-name nav-link" href="/">X CRM</a>
+        </div>
+        <ul class="nav-lists">
+            <li class="nav-list">
+                <a class="nav-link active" href="{{ url_for('home') }}">Why X CRM?</a>
+            </li>
+            <li class="nav-list">
+                <a class="nav-link active" href="{{ url_for('about') }}">Pricing</a>
+            </li>
+            <li class="nav-list">
+                <a class="nav-link active" href="/auth/sign-up">
+                    Sign Up
+                </a>
+            </li>
+            <li class="nav-list">
+                <a class='nav-link active' href="/auth/login">Log In</a>
+            </li>
+        </ul>
+      </div>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for message in messages %}
+        {% if category == 'error' %}
+        <div class="alert alert-danger alter-dismissable fade show" role="alert">
+            {{ message }}
+        </div>
+        {% else %}
+        <div class="alert alert-success alter-dismissable fade show" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <main>
+      {% block content %} {% endblock %}
+    </main>
+  </body>
+</html>
