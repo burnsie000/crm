@@ -1,5 +1,22 @@
 {% extends 'layout.html' %} {% block content %}
-<div>
-    
+<div class="crm-page">
+    <div class="crm-menu">
+        <div class="contacts-block">
+            <a>
+                <span class="contacts">Contacts</span>
+            </a>
+        </div>
+    </div>
+    <div class="crm-inner-page">
+        <div class="crm-upper-static">
+            <input class="upload-csv" type="file" name="file" accept=".csv, .xlsx">
+            <input class="upload" type="submit" value="upload">
+        </div>
+        <div class="crm-contacts">
+            <div class="contacts-section">
+                <a>Contacts go here</a>
+            </div>
+        </div>
+    </div>
 </div>
-{% extends 'layout.html' %} {% block content %}
+{% endblock %}

@@ -35,7 +35,7 @@ def home ():
     name = '30 Days Of Python Programming'
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
-@app.route('/CRM')
+@app.route('/CRM', methods=['GET', 'POST'])
 def crm ():
     return render_template('crm.html', user=current_user)
 
