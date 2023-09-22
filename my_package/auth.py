@@ -32,7 +32,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'), user=current_user)
+    return redirect(url_for('auth.login'))
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
@@ -68,7 +68,7 @@ def sign_up():
             db.session.add(new_user)
             db.session.commit()
             flash('Account Created!', category='success')
-            login_user(user, remember=True)
-            return redirect(url_for('views.home'), user=current_user)
+            login_user(new_user, remember=True)
+            return redirect(url_for('views.home'))
 
     return render_template('sign-up.html', user=current_user)

@@ -4,7 +4,7 @@ import os # importing operating system module
 import os
 from my_package.__init__ import create_app
 from flask_login import LoginManager
-from flask_login import current_user
+from flask_login import current_user,login_required
 from my_package.models import CRM, User, db
 from flask import send_from_directory
 import csv
@@ -40,6 +40,7 @@ def home ():
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
 @app.route('/CRM', methods=['GET', 'POST'])
+@login_required
 def crm ():
     if request.method == 'POST':
         csv_file_upload = request.files['csv']
@@ -50,7 +51,7 @@ def crm ():
         # Wrap the FileStorage object in a TextIOWrapper so we can read it as text
         if csv_file_upload:
             csvfilename = secure_filename(csv_file_upload.filename)
-            saved_path = os.path.join(app.config['UPLOAD_FOLDER'], csvfilename)
+            saved_path = os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id))
             csv_file_upload.save(saved_path)
 
             with open(saved_path, 'r') as f:
@@ -59,13 +60,14 @@ def crm ():
                     new_contact = CRM(
                         Contact=row.get('Contact'),
                         PhoneEmail=row.get('PhoneEmail'),
-                        Tags=row.get('Tags')
+                        Tags=row.get('Tags'),
+                        user_id=current_user.id
                     )
                     db.session.add(new_contact)
                 db.session.commit()
 
     page = request.args.get('page', 1, type=int)
-    contacts = CRM.query.paginate(page=page, per_page=10, error_out=False)
+    contacts = CRM.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=10, error_out=False)
     next_url = url_for('crm', page=contacts.next_num) if contacts.has_next else None
     prev_url = url_for('crm', page=contacts.prev_num) if contacts.has_prev else None
     current_page = contacts.page  # Current page number

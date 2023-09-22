@@ -21,6 +21,7 @@
                     <th class="crm-header-item">Phone/Email</th>
                     <th class="crm-header-item">Tags</th>
                 </tr>
+                {% if pages and pages[-1] < total_pages %}
                 {% for contact in contacts %}
                 <tr class="crm-info-row">
                     <td class="crm-info">{{ contact.Contact }}</td>
@@ -50,6 +51,8 @@
                 {% if next_url %}
                     <a class="next-page" href="{{ next_url }}">Next</a>
                 {% endif %}
+                {% endif %}
+                
             </div>
         </div>
     </div>
