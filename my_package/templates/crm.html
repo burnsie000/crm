@@ -9,12 +9,47 @@
     </div>
     <div class="crm-inner-page">
         <div class="crm-upper-static">
-            <input class="upload-csv" type="file" name="file" accept=".csv, .xlsx">
-            <input class="upload" type="submit" value="upload">
+            <form method="POST" enctype="multipart/form-data">
+                <input class="upload-csv" type="file" name="csv" accept=".csv, .xlsx">
+                <input class="upload" type="submit" value="upload">
+            </form>
         </div>
         <div class="crm-contacts">
-            <div class="contacts-section">
-                <a>Contacts go here</a>
+            <table class="contacts-section">
+                <tr class="crm-header">
+                    <th class="crm-header-item"> Contact</th>
+                    <th class="crm-header-item">Phone/Email</th>
+                    <th class="crm-header-item">Tags</th>
+                </tr>
+                {% for contact in contacts %}
+                <tr class="crm-info-row">
+                    <td class="crm-info">{{ contact.Contact }}</td>
+                    <td class="crm-info">{{ contact.PhoneEmail }}</td>
+                    <td class="crm-info">{{ contact.Tags }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="pagination">
+                <p class="static-page-txt">Page:</p>
+                {% if prev_url %}
+                    <a class="previous-page" href="{{ prev_url }}">Previous</a>
+                {% endif %}
+                {% if current_page > 5 %}
+                <a class="page-item-crm" href="{{ url_for('crm', page=1) }}">1</a>
+                <span class="three-dots">. . .</span>
+                {% endif %}
+                {% for page in pages %}
+                    <a class="page-item-crm" href="{{ url_for('crm', page=page) }}">{{ page }}</a>
+                {% endfor %}
+            
+                {% if pages[-1] < total_pages %}
+                    <span class="three-dots">. . .</span>
+                    <a class="total-pages" href="{{ url_for('crm', page=total_pages) }}">{{ total_pages }}</a>
+                {% endif %} 
+            
+                {% if next_url %}
+                    <a class="next-page" href="{{ next_url }}">Next</a>
+                {% endif %}
             </div>
         </div>
     </div>

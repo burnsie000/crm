@@ -425,10 +425,14 @@ h2 {
   width: 20%;
   height: 100%;
   position: absolute;
-  background-color: rgb(7, 7, 7);
+  background-color: rgb(14, 14, 14);
+  border-right-color: #F5E400;
+  border-right-style: solid;
+  border-right-width: blur(2px);
   left: 0;
   bottom: 0;
   top: 6.3em;
+  color: #F5E400;
 }
 .crm-inner-page {
   width: 80%;
@@ -450,6 +454,7 @@ h2 {
   position: relative;
   margin-left: 40em;
   margin-top: 6em;
+  color: white;
 }
 
 .upload {
@@ -470,10 +475,10 @@ h2 {
   display: block;
   width: 100%;
   position: relative;
-  height: 5em;
+  height: 100%;
   background-color: rgb(21, 21, 21);
   color: white;
-  padding: 1em;
+  padding: 30px;
 }
 .login-button {
   width: 14em;
@@ -490,4 +495,52 @@ h2 {
   font-family: 'lato', 'sans-serif';
   margin-top: 3em;
   margin-left: 2em;
+}
+.crm-header {
+  display: table-row;
+  width: 100%;
+  text-align: center;
+}
+.page-item-crm, .total-pages, .next-page, .static-page-txt, .previous-page {
+  position: relative;
+  margin-right: 10px;  /* Add right margin */
+}
+.static-page-txt {
+  color: #F5E400;
+}
+.page-item-crm, .total-pages, .next-page, .previous-page, .three-dots {
+  position: relative;
+  margin-top: 8px;  /* Add right margin */
+  color: white;
+}
+.page-item-crm:hover, .total-pages:hover, .next-page:hover, .previous-page:hover {
+  position: relative;
+  margin-top: 8px;  /* Add right margin */
+  color: #F5E400;
+}
+.three-dots {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.crm-info-row {
+  display: table-row;
+  position: relative;
+  background-color: rgb(21,21,21);
+  margin-top: 3px;
+  border-color: #F5E400;
+  border-width: blur(2px);
+  border-style: solid;
+  height: 5em;
+  padding: 1.5em;
+  width: 100%;
+}
+.crm-info {
+  display: table-cell;
+  width: 33.33%;
+  text-align: center;
+}
+
+.pagination {
+  margin-top: 10px;
+  margin-left: 1.7em;
 }
