@@ -36,13 +36,6 @@
           <a class="brand-name nav-link" href="/">X CRM</a>
         </div>
         <ul class="nav-lists">
-            <li class="nav-list">
-                <a class="nav-link active" href="{{ url_for('home') }}">Why X CRM?</a>
-            </li>
-            <li class="nav-list">
-                <a class="nav-link active" href="{{ url_for('pricing') }}">Pricing</a>
-            </li>
-            
             {% if user.is_authenticated %}
             <li class="nav-list">
               <a class="nav-link active" href="/CRM">CRM</a>
@@ -58,6 +51,12 @@
               <a class="nav-link active" href="/auth/sign-up">
                   Sign Up
               </a>
+            </li>
+            <li class="nav-list">
+              <a class="nav-link active" href="{{ url_for('pricing') }}">Pricing</a>
+            </li>
+            <li class="nav-list">
+              <a class="nav-link active" href="{{ url_for('home') }}">Why X CRM?</a>
             </li>
             {% endif %}
         </ul>

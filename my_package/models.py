@@ -12,6 +12,7 @@ class CRM(db.Model):
     PhoneEmail = db.Column(db.String(10000))
     Tags = db.Column(db.String(10000))
     activities = db.Column(db.String(100000))
+    
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,3 +23,4 @@ class User(db.Model, UserMixin):
     phonenumber = db.Column(db.String(20))
     company = db.Column(db.String(150))
     crm = db.relationship('CRM')  # Changed from 'Note' to 'CRM'
+   

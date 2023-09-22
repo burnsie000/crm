@@ -74,6 +74,15 @@ h2 {
     margin-left: 9em;
     margin-right: 20em;
 }
+.brand-name:hover, .nav-link:hover, .active:hover {
+  color: #F5E400;
+  transition: 0.15s;
+}
+.brand-name:active, .nav-link:active, .active:active {
+  color: #F5E400;
+  scale: 0.75;
+  transition: 0.15s;
+}
 /* === paragraph text style === */
 p {
     font-size: 22px;
@@ -543,4 +552,15 @@ h2 {
 .pagination {
   margin-top: 10px;
   margin-left: 1.7em;
+}
+.contacts-block {
+  display: block;
+  font-family: 'lato', 'sans-serif';
+  font-weight: 600;
+  color: white;
+  font-size: 28px;
+  text-align: center;
+  border-width: blur(2px);
+  border-color: #F5E400;
+  border-style: solid;
 }
