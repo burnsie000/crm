@@ -82,10 +82,23 @@ def delete_contact(contact_id):
 def save_notes(id):
     contact = CRM.query.get_or_404(id)
     if contact.user_id == current_user.id:
-        new_note = Note(content=request.form.get('notes'), contact_id=id)
+        due_date_str = request.form.get('due_date')
+        due_date = datetime.strptime(due_date_str, '%Y-%m-%d') if due_date_str else None
+        new_note = Note(content=request.form.get('notes'), contact_id=id, due_date=due_date)
         db.session.add(new_note)
         db.session.commit()
-    return redirect(url_for('contact_detail', id=id))
+        return redirect(url_for('contact_detail', id=id))
+
+@app.route('/upcoming_due_dates')
+@login_required
+def upcoming_due_dates():
+    current_time = datetime.utcnow()
+    contacts_with_due_dates = (db.session.query(CRM, Note)
+                                .join(Note, Note.contact_id == CRM.id)
+                                .filter(Note.due_date > current_time)
+                                .order_by(Note.due_date.asc())
+                                .all())
+    return render_template('upcoming_due_dates.html', contacts_with_due_dates=contacts_with_due_dates)
 
 # app.py
 @app.route('/contact_detail/<int:id>')
@@ -94,8 +107,6 @@ def contact_detail(id):
     contact = CRM.query.get_or_404(id)
     notes = Note.query.filter_by(contact_id=id).all()
     return render_template('contact_detail.html', contact=contact, notes=notes, user=current_user)
-
-
 
 
 @app.route('/CRM', methods=['GET', 'POST'])

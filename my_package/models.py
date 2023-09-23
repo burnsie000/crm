@@ -44,6 +44,7 @@ class Note(db.Model):
     content = db.Column(db.String(10000))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     contact_id = db.Column(db.Integer, db.ForeignKey('CRM.id'))
+    due_date = db.Column(db.DateTime, nullable=True)
 
 
    

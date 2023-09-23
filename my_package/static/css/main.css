@@ -861,7 +861,10 @@ input[type=file]::file-selector-button {
   margin-top: 3em;
   margin: auto;
   left: 25em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+}
+#toggleNotes:focus {
+  outline: none;
 }
 .back-to-crm {
   display: inline-block;
@@ -984,4 +987,32 @@ input[type=file]::file-selector-button {
   opacity: 0.75;
   scale: 0.75;
   transition: 0.15s;
+}
+#due_date {
+  display: inline-block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  left: 4em;
+  top:5em;
+}
+#due_date:focus {
+  display: inline-block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  left: 4em;
+  top:5em;
+  outline: none;
+}
+.label-due-date {
+  color: white;
+  display: inline-block;
+  position: relative;
+  left: 8.7em;
+  top: 3em;
 }

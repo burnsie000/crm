@@ -69,6 +69,6 @@ def sign_up():
             db.session.commit()
             flash('Account Created!', category='success')
             login_user(new_user, remember=True)
-            return render_template('crm.html', user=current_user)
+            return render_template(url_for('app.crm'))
 
     return render_template('sign-up.html', user=current_user)

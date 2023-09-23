@@ -33,14 +33,17 @@
     </div>  
 </div>
 <form class="new-note-form" action="{{ url_for('save_notes', id=contact.id) }}" method="POST">
+    <!-- ... existing fields -->
     <label class="notes-label" for="notes">New Note:</label>
     <textarea class="notes-txt-input" name="notes" id="notes"></textarea>
-    <button  class='notes-submit-btn' type="submit">Save Note</button>
+    <label class="label-due-date" for="due_date">Due Date:</label>
+    <input type="date" name="due_date" id="due_date">
+    <button class="notes-submit-btn" type="submit">Save Note</button>
 </form>
 
 <h3 class="last-note-heading">Last Note</h3>
 <!-- Display the last note in a paragraph -->
-<p class="last-note">{{ notes[0].content if notes else "No notes available" }}</p>
+<p class="last-note">{{ notes[-1].content if notes else "No notes available" }}</p>
 <div class="contact-details-button-div">
     <button id="toggleNotes">Show Previous Notes</button>
 </div>
