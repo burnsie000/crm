@@ -1,0 +1,78 @@
+{% extends 'layout.html' %} 
+{% block content %}
+<div class="contact-details-div">
+    <a href="{{ url_for('crm') }}"><button class="back-to-crm">Go Back</button></a>
+    <form action="{{ url_for('delete_contact', contact_id=contact.id) }}" method="post">
+        <input class="delete-contact-btn" type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this contact?');">
+    </form>
+</div>
+<div class="contact-details-div">
+    {% set names = contact.Contact.split(" ") %}
+    {% set initials = names[0][0].upper() if names[0] else '' %}
+    {% set second_initial = names[1][0].upper() if names[1] and names[1][0].isalpha() else '' %}
+    {% set initials = initials + second_initial if names|length > 1 else initials %}
+    <div class="profile-picture profile-picture-details">{{ initials }}</div>
+    <div class="contact-details-txt">
+        <h1 class="contact-details-header">Contact Details</h1>
+        <p class="contact-details">Contact: {{ contact.Contact }}</p>
+        <p class="contact-details">Phone/Email: {{ contact.PhoneEmail }}</p>
+        <p class="contact-details">Tags: 
+            <ul class="contact-tags">
+                {% for tag in contact.tags %}
+                    <p class="tag-btn">{{ tag.name }}</p>
+                {% else %}
+                    <p class="tag-btn-none">No tags available</p>
+                {% endfor %}
+            </ul>
+        </p>
+        <form action="{{ url_for('add_tag', id=contact.id) }}" method="POST">
+            <label for="new_tag">Add Tag:</label>
+            <input type="text" name="new_tag" id="new_tag">
+            <button class="add-tag" type="submit">Add Tag</button>
+        </form>
+    </div>  
+</div>
+<form class="new-note-form" action="{{ url_for('save_notes', id=contact.id) }}" method="POST">
+    <label class="notes-label" for="notes">New Note:</label>
+    <textarea class="notes-txt-input" name="notes" id="notes"></textarea>
+    <button  class='notes-submit-btn' type="submit">Save Note</button>
+</form>
+
+<h3 class="last-note-heading">Last Note</h3>
+<!-- Display the last note in a paragraph -->
+<p class="last-note">{{ notes[0].content if notes else "No notes available" }}</p>
+<div class="contact-details-button-div">
+    <button id="toggleNotes">Show Previous Notes</button>
+</div>
+<div id="previousNotes" style="display: none;"> 
+    <h3 class="prev-note-heading">Previous Notes</h3>
+    <!-- List previous notes -->
+    <ul>
+        {% if notes %}
+        {% for note in notes[1:] %}
+            <li class="previous-note">{{ note.content }} ({{ note.created_at }})</li>
+        {% endfor %}
+        {% else %}
+            <li class="no-previous-note">No previous notes</li>
+        {% endif %}
+    </ul>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the button and the div elements
+        const toggleNotesButton = document.getElementById('toggleNotes');
+        const previousNotesDiv = document.getElementById('previousNotes');
+
+        // Add click event listener
+        toggleNotesButton.addEventListener('click', function() {
+            if(previousNotesDiv.style.display === 'none') {
+                previousNotesDiv.style.display = 'block';
+                toggleNotesButton.textContent = 'Hide Previous Notes';
+            } else {
+                previousNotesDiv.style.display = 'none';
+                toggleNotesButton.textContent = 'Show Previous Notes';
+            }
+        });
+    });
+</script>
+{% endblock %}

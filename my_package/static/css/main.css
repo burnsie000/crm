@@ -472,6 +472,17 @@ h2 {
   right: -25em;
   bottom: 4em;
 }
+.upload-csv:hover {
+  display: inline-block;
+  position: relative;
+  margin-left: 50em;
+  margin-top: 5em;
+  color: #F5E400;
+  right: -25em;
+  bottom: 4em;
+  opacity: 0.75;
+  transition: 0.15s;
+}
 
 .upload {
   margin-right: 0em;
@@ -488,6 +499,25 @@ h2 {
   border-radius: 1.5em;
   bottom: 4em;
 }
+
+.upload:hover {
+  margin-right: 0em;
+  display:inline-block;
+  position: relative;
+  right: -25em;
+  border-width: blur(2px);
+  border-style: solid;
+  border-color: #F5E400;
+  background-color: rgb(14,14,14);
+  color: white;
+  height: 3em;
+  width: 8em;
+  border-radius: 1.5em;
+  bottom: 4em;
+  opacity: 0.75;
+  transition: 0.15s;
+} 
+
 .crm-contacts {
   position: relative;
   display: block;
@@ -528,6 +558,9 @@ h2 {
   width: 100%;
   text-align: center;
 }
+.crm-header-item {
+  margin-bottom: 3em;
+}
 .page-item-crm, .total-pages, .next-page, .static-page-txt, .previous-page {
   position: relative;
   margin-right: 10px;  /* Add right margin */
@@ -563,8 +596,28 @@ h2 {
 }
 .crm-info {
   display: table-cell;
-  width: 33.33%;
+  width: 20%;
   text-align: center;
+}
+
+.crm-info-row:hover {
+  background-color: rgb(14,14,14);
+  cursor: pointer;
+}
+.center-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:transparent;
+  background: none;
+}
+
+.profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background: none;
 }
 
 .pagination {
@@ -593,4 +646,342 @@ input[type=file]::file-selector-button {
   width: 8em;
   border-radius: 1.5em;
   bottom: -7em;
+}
+.contact-link {
+  text-decoration: none;
+  color: white;
+}
+.contact-link:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.contact-details {
+  color: white;
+}
+.contact-details-header {
+  margin-left: 0em;
+}
+.contact-details-div {
+  margin-left: 24em;
+}
+.tag-button {
+  display: inline-block;
+  margin: auto;
+  height: 2em;
+  width: 6em;
+  background-color: #F5E400;
+  color: black;
+  border-radius: 1em;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+.tag-button:hover {
+  display: inline-block;
+  margin: auto;
+  height: 2em;
+  width: 6em;
+  background-color: #F5E400;
+  color: black;
+  border-radius: 1em;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  opacity: 0.75;
+  transition: 0.15s;
+}
+
+.delete-contact-btn {
+  display: inline-block;
+  margin: auto;
+  height: 2em;
+  width: 6em;
+  background: none;
+  color: white;
+  border-radius: 1em;
+  border-color: #F5E400;
+  border-style: solid;
+  border-width: blur(2px);
+  margin-left: 8em;
+  margin-top: 3em;
+}
+.profile-picture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: #F5E400;
+  text-align: center;
+  line-height: 50px;
+  font-size: 20px;  /* Adjusted font size */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background: none;
+  border-color: #F5E400;
+  border-width: blur(2px);
+  border-style: solid;
+}
+
+.profile-picture::before {
+  content: attr(data-initial);
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background: none;
+}
+
+.profile-picture::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background: none;
+  border-color: #F5E400;
+  border-width: blur(2px);
+  border-style: solid;
+}
+
+.profile-picture-details {
+  margin-left: -4em;
+  display: inline-block;
+  position: relative;
+  margin-right: 2em;
+  top: -14em
+}
+.contact-details-txt {
+  display: inline-block;
+}
+.new-note-form {
+  display: block;
+  position: relative;
+  margin-left: 25em;
+}
+.notes-label {
+  display: block;
+  color: #F5E400;
+  font-size: 24px;
+  font-weight: bold;
+}
+.notes-submit-btn {
+  display: block;
+  position: relative;
+  background-color: #F5E400;
+  border: transparent;
+  border-radius: 1em;
+  height: 2em;
+  width: 6em;
+  margin-top: 3em;
+  color: black;
+  font-weight: bolder;
+}
+.notes-txt-input {
+  display: block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  border-width: blur(2px);
+  right: 15.7em;
+}
+.notes-txt-input:focus {
+  display: block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  border-width: blur(2px);
+  right: 15.7em;
+}
+
+.last-note-heading {
+  display: block;
+  position: relative;
+  color: #f5e400;
+  margin-left: 14.3em;
+  margin-top: 1em;
+  font-weight: bold;
+}
+.last-note {
+  display: block;
+  position: relative;
+  color: white;
+  margin-left: 18.2em;
+  margin-top: 1em;
+}
+.prev-note-heading {
+  display: block;
+  position: relative;
+  color: #f5e400;
+  font-weight: bold;
+  margin-left: 14.3em;
+  margin-top: 1em;
+}
+.no-previous-note, .previous-note {
+  display: block;
+  position: relative;
+  color: white;
+  margin-left: 25em;
+  margin-top: 1em;
+}
+.contact-details-button-div {
+  display: block;
+  position: relative;
+}
+
+#toggleNotes {
+  display: inline-block;
+  position: relative;
+  height: 2em;
+  width: 6em;
+  border-radius: 1em;
+  background-color: #F5E400;
+  color: black;
+  border: transparent;
+  margin-top: 3em;
+  margin: auto;
+  left: 25em;
+  margin-bottom: 2em;
+}
+.back-to-crm {
+  display: inline-block;
+  position: relative;
+  height: 2em;
+  width: 6em;
+  border-radius: 1em;
+  background-color: #F5E400;
+  color: black;
+  border: transparent;
+  margin-top: 3em;
+  margin: auto;
+  top: 5em;
+  left: 1em;
+  padding: 2px;
+}
+.tag-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tag-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+}
+
+.contact-tags {
+  display: block;
+  position: relative;
+}
+
+.tag-btn {
+  margin: 0 5px;
+  border-width: blur(2px);
+  border-style: solid;
+  border-color: #F5E400;
+  background-color: transparent;
+  color: white;
+  height: 2em;
+  width: fit-content;
+  border-radius: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  display: inline-block;
+  position: relative;
+}
+.tag-btn-none {
+  display: flex;
+  margin: 0 5px;
+  background-color: transparent;
+  color: white;
+  height: 2em;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+}
+#new_tag {
+  display: inline-block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  border-width: blur(2px);
+  right: 4em;
+}
+#new_tag:focus {
+  display: inline-block;
+  position: relative;
+  background-color: rgb(14,14,14);
+  color: white;
+  border-color: #f5e400;
+  border-style: solid;
+  border-width: blur(2px);
+  outline: none;
+}
+.add-tag {
+  display: inline-block;
+  position: relative;
+  background-color: #F5E400;
+  border: transparent;
+  border-radius: 1em;
+  height: 2em;
+  width: 6em;
+  color: black;
+  font-weight: bolder;
+  left: -2em;
+  margin-top: 1em;
+}
+.add-tag:hover {
+  display: inline-block;
+  position: relative;
+  background-color: #F5E400;
+  border: transparent;
+  border-radius: 1em;
+  height: 2em;
+  width: 6em;
+  color: black;
+  font-weight: bolder;
+  left: -2em;
+  margin-top: 1em;
+  opacity: 0.75;
+  transition: 0.15s;
+}
+.add-tag:active {
+  display: inline-block;
+  position: relative;
+  background-color: #F5E400;
+  border: transparent;
+  border-radius: 1em;
+  height: 2em;
+  width: 6em;
+  color: black;
+  font-weight: bolder;
+  left: -2em;
+  margin-top: 1em;
+  opacity: 0.75;
+  scale: 0.75;
+  transition: 0.15s;
 }

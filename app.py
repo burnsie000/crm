@@ -5,10 +5,11 @@ import os
 from my_package.__init__ import create_app
 from flask_login import LoginManager
 from flask_login import current_user,login_required
-from my_package.models import CRM, User, db
+from my_package.models import CRM, User, db, Note, Tags
 from flask import send_from_directory
 import csv
 from werkzeug.utils import secure_filename
+from sqlalchemy import desc
 
 app = Flask(__name__)
 
@@ -39,16 +40,73 @@ def home ():
     name = '30 Days Of Python Programming'
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
+@app.route('/add_tag/<int:id>', methods=['POST'])
+@login_required
+def add_tag(id):
+    contact = CRM.query.get_or_404(id)
+    if contact.user_id != current_user.id:
+        return 'You do not have permission to edit this contact'
+        
+    new_tag_name = request.form.get('new_tag').strip()
+    if new_tag_name:  # Check if the tag is not empty
+        # Check if the tag already exists, create if not
+        tag = Tags.query.filter_by(name=new_tag_name).first()
+        if tag is None:
+            tag = Tags(name=new_tag_name)
+            db.session.add(tag)
+        
+        # Add the new tag to the contact
+        contact.tags.append(tag)
+        db.session.commit()
+        
+    return redirect(url_for('contact_detail', id=id))
+
+@app.route('/delete_contact/<int:contact_id>', methods=['POST'])
+@login_required
+def delete_contact(contact_id):
+    contact_to_delete = CRM.query.get_or_404(contact_id)
+
+    # Make sure the current user owns the contact
+    if contact_to_delete.user_id != current_user.id:
+        return 'You do not have permission to delete this contact'
+
+    try:
+        db.session.delete(contact_to_delete)
+        db.session.commit()
+        return redirect(url_for('crm'))  # Redirecting to the list of contacts after deletion
+    except:
+        return 'There was an issue deleting that contact'
+
+@app.route('/save_notes/<int:id>', methods=['POST'])
+@login_required  # Assuming you're using Flask-Login
+def save_notes(id):
+    contact = CRM.query.get_or_404(id)
+    if contact.user_id == current_user.id:
+        new_note = Note(content=request.form.get('notes'), contact_id=id)
+        db.session.add(new_note)
+        db.session.commit()
+    return redirect(url_for('contact_detail', id=id))
+
+# app.py
+@app.route('/contact_detail/<int:id>')
+@login_required
+def contact_detail(id):
+    contact = CRM.query.get_or_404(id)
+    notes = Note.query.filter_by(contact_id=id).all()
+    return render_template('contact_detail.html', contact=contact, notes=notes, user=current_user)
+
+
+
+
 @app.route('/CRM', methods=['GET', 'POST'])
 @login_required
-def crm ():
+def crm():
     if request.method == 'POST':
         csv_file_upload = request.files['csv']
         
         if not csv_file_upload:
             return "No file uploaded", 400
 
-        # Wrap the FileStorage object in a TextIOWrapper so we can read it as text
         if csv_file_upload:
             csvfilename = secure_filename(csv_file_upload.filename)
             saved_path = os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id))
@@ -57,24 +115,49 @@ def crm ():
             with open(saved_path, 'r') as f:
                 csv_file = csv.DictReader(f)
                 for row in csv_file:
+                    tag_names = row.get('Tags', '').split(',')
+                    tags = []
+                    
+                    for tag_name in tag_names:
+                        tag_name = tag_name.strip()  # Remove any extra spaces
+                        if tag_name:  # Skip empty or null strings
+                            tag = Tags.query.filter_by(name=tag_name).first()
+                            if tag is None:
+                                tag = Tags(name=tag_name)
+                                db.session.add(tag)
+                            tags.append(tag)
+                    
                     new_contact = CRM(
                         Contact=row.get('Contact'),
                         PhoneEmail=row.get('PhoneEmail'),
-                        Tags=row.get('Tags'),
+                        tags=tags,
                         user_id=current_user.id
                     )
                     db.session.add(new_contact)
                 db.session.commit()
 
     page = request.args.get('page', 1, type=int)
-    contacts = CRM.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=10, error_out=False)
+    
+    contacts = (CRM.query
+                .filter_by(user_id=current_user.id)
+                .join(Note, isouter=True)  # Use outerjoin if you are using older SQLAlchemy
+                .order_by(CRM.id, desc(Note.created_at))
+                .paginate(page=page, per_page=10, error_out=False))
+
+    # Create a dictionary to store the latest note for each contact
+    latest_notes = {}
+    for contact in contacts.items:
+        if contact.notes:
+            latest_notes[contact.id] = contact.notes[0].content
+
     next_url = url_for('crm', page=contacts.next_num) if contacts.has_next else None
     prev_url = url_for('crm', page=contacts.prev_num) if contacts.has_prev else None
-    current_page = contacts.page  # Current page number
-    total_pages = contacts.pages  # Total number of pages
-    pages_to_show = 5  # Number of pages to show in the pagination control
+    current_page = contacts.page
+    total_pages = contacts.pages
+    pages_to_show = 5
     pages = [page for page in range(current_page, min(current_page + pages_to_show, total_pages + 1))]
-    return render_template('crm.html', contacts=contacts.items, next_url=next_url, prev_url=prev_url, pages=pages, total_pages=total_pages, user=current_user, current_page=current_page)
+    
+    return render_template('crm.html', contacts=contacts.items, latest_notes=latest_notes, next_url=next_url, prev_url=prev_url, pages=pages, total_pages=total_pages, user=current_user, current_page=current_page)
 
 @app.route('/csv/<filename>')
 def uploaded_csv(filename):

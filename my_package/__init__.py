@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 import os
+from sqlalchemy import MetaData
 
 UPLOAD_FOLDER = os.path.join('my_package/static/css', 'csv')
 
@@ -10,6 +11,7 @@ ALLOWED_EXTENSIONS = {'csv'}
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
+metadata = MetaData()
 
 def create_app():
     app = Flask(__name__)
@@ -34,5 +36,6 @@ def create_app():
 def create_database(app):
     if not path.exists(f'{DB_NAME}'):
         with app.app_context():
+            metadata.create_all(db.engine)
             db.create_all()
         print('Created Database!')
