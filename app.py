@@ -40,6 +40,23 @@ def home ():
     name = '30 Days Of Python Programming'
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
+@app.route('/delete_empty_contacts', methods=['GET'])
+@login_required
+def delete_empty_contacts():
+    # Query to find 'empty' contacts. Adjust the criteria as needed.
+    empty_contacts = CRM.query.filter(
+        (CRM.Contact == None) | (CRM.Contact == ''), 
+        (CRM.PhoneEmail == None) | (CRM.PhoneEmail == '')
+    ).all()
+
+    for contact in empty_contacts:
+        if contact.user_id == current_user.id:  # Ensure the user owns this contact
+            db.session.delete(contact)
+
+    db.session.commit()
+
+    return redirect(url_for('crm'))
+
 @app.route('/add_tag/<int:id>', methods=['POST'])
 @login_required
 def add_tag(id):

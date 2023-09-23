@@ -71,4 +71,4 @@ def sign_up():
             login_user(new_user, remember=True)
             return render_template(url_for('app.crm'))
 
-    return render_template('sign-up.html', user=current_user)
+    return render_template(url_for('sign-up'))
