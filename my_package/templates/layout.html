@@ -80,6 +80,20 @@
     {% endif %}
     {% endwith %}
     <main>
+      <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            const closeButtons = document.querySelectorAll('.close');
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const alertBox = e.target.closest('.alert');
+                    if (alertBox) {
+                        alertBox.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
       {% block content %} {% endblock %}
     </main>
   </body>
