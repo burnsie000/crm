@@ -14,6 +14,9 @@ from sqlalchemy import desc, asc
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from datetime import datetime
 from math import ceil
+import smtplib
+from email.mime.text import MIMEText
+
 
 app = Flask(__name__)
 
@@ -37,6 +40,7 @@ app.secret_key = '823r9h2983hrf23j89fj29r8329'
 
 from my_package.auth import auth
 from my_package.views import views 
+
 
 @app.route('/') # this decorator create the home route
 def home ():
@@ -81,30 +85,59 @@ def upcoming_due_dates():
                            user=current_user)
 
 
-
-
 s = URLSafeTimedSerializer(app.secret_key)
 
-@app.route('/send_invite', methods=['POST'])
-@login_required
-def send_invite():
-    email_to_invite = request.form.get('email')
-    organization_id = current_user.organization_id
+def send_email(subject, recipient, body):
+    sender = 'goaliebrady00@gmail.com'
+    password = 'cmvu lgly jwqa lkre'
 
-    token = s.dumps({'email': email_to_invite, 'organization_id': organization_id}, salt='invite-salt')
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = recipient
 
-    # Normally, send the token via email to the invited user.
-    # For now, just print it for testing.
-    print(f"Send this token to the user: {token}")
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(sender, password)
+        server.sendmail(sender, recipient, msg.as_string())
+        server.quit()
+        return True
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
 
-    return redirect(url_for('dashboard'))
+@app.route('/invite_user', methods=['GET', 'POST'])
+def invite_user():
+    if request.method == 'POST':
+        email = request.form['email']
+
+        # Generate a secure token
+        data = {'email': email, 'organization_id': current_user.organization_id}
+        token = s.dumps(data, salt='email-invite')
+
+        # Generate the URL for email
+        invitation_link = url_for('accept_invite', token=token, _external=True)
+
+        subject = "You're Invited to Join Our Organization"
+        body = f'You have been invited to join our organization. Click the link to accept: {invitation_link}'
+
+        if send_email(subject, email, body):
+            flash('Invitation sent successfully.', 'success')
+        else:
+            flash('An error occurred while sending the invitation.', 'danger')
+
+        return redirect(url_for('invite_user'))
+
+    return render_template('invite_user.html', user=current_user)
 
 @app.route('/accept_invite/<token>', methods=['GET', 'POST'])
 def accept_invite(token):
-    s = URLSafeTimedSerializer(app.secret_key)  # Replace 'YourSecretKey' with your actual secret key
+    s = URLSafeTimedSerializer(app.secret_key)
     
+    all_users = User.query.all()
+
     try:
-        email = s.loads(token, max_age=3600)  # Token expires after 1 hour
+        email = s.loads(token, max_age=3600, salt='email-invite')  # Token expires after 1 hour
     except SignatureExpired:
         flash('The invitation link has expired.')
         return redirect(url_for('home'))
@@ -112,6 +145,9 @@ def accept_invite(token):
         flash('Invalid invitation link.')
         return redirect(url_for('home'))
     
+    print("Email from token:", email)
+    print("All emails in DB:", [u.email for u in all_users])
+
     if request.method == 'POST':
         password = request.form['password']
         firstname = request.form['firstname']
@@ -119,12 +155,21 @@ def accept_invite(token):
         phonenumber = request.form['phonenumber']
         company = request.form['company']
         
-        # Assuming you have a function or method to hash the password
-        hashed_password = generate_password_hash(password, method='sha256')  # Replace with your actual hashing method
+        # Hash the password
+        hashed_password = generate_password_hash(password, method='sha256')
         
         # Fetch the organization_id from the inviting user
         inviting_user = User.query.filter_by(email=email).first()
-        organization_id = inviting_user.organization_id  # This assumes that your User model has an organization_id field
+        
+        if inviting_user is None:
+            flash(f'Inviting user not found for email: {email}')
+            return redirect(url_for('home'))
+        
+        if inviting_user.organization:
+            organization_id = inviting_user.organization.id
+        else:
+            flash('Organization not found for inviting user.')
+            return redirect(url_for('home'))
 
         # Create the new user
         new_user = User(
@@ -143,8 +188,7 @@ def accept_invite(token):
         flash('You have successfully joined the organization.')
         return redirect(url_for('login'))
     
-    return render_template('accept_invite.html', email=email, token=token)
-
+    return render_template('accept_invite.html', email=email, token=token, user=current_user)  # Removed 'user=current_user' as it's not used in this route
 
 
 @app.route('/delete_empty_contacts', methods=['GET'])
