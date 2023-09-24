@@ -1073,3 +1073,19 @@ input[type=file]::file-selector-button {
 .nav-item, .dropdown {
   margin-left: 2em;
 }
+.account-dropdown-greeting {
+  justify-content: center;
+  text-align: center;
+  font-weight: bolder;
+  color: #F5E400;
+}
+.dropdown-menu {
+  background-color: rgb(21,21,21);
+}
+.dropdown-item {
+  color: white;
+}
+.dropdown-item:hover {
+  color: #F5E400;
+  background-color: rgb(28,28,28)
+}

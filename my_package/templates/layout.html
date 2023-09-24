@@ -54,7 +54,7 @@
                 <i class="bi bi-person-circle"></i>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <p>Hello, {{ user.firstname }}</p>
+                <h3 class="account-dropdown-greeting">Hello, {{ user.firstname }}</h3>
                 {% if user.is_admin %}
                 <a class="dropdown-item" href="/admin_dashboard">Admin Dashboard</a>
                 <a class="dropdown-item" href="/invite_user">Invite a User</a>
