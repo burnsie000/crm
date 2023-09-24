@@ -70,25 +70,6 @@ def promote_to_admin(user_id):
     flash(f'User {user.email} has been promoted to admin.')
     return redirect(url_for('admin_dashboard'))
 
-@app.route('/delete_user/<int:user_id>')
-def delete_user(user_id):
-    if not current_user.is_admin:
-        flash('Access unauthorized.')
-        return redirect(url_for('admin_dashboard'))
-
-    user = User.query.get(user_id)
-    if user.is_admin:
-        flash('Cannot delete an admin.')
-        return redirect(url_for('admin_dashboard'))
-
-    # Your logic to delete the user's CSV data here
-
-    db.session.delete(user)
-    db.session.commit()
-
-    flash(f'User {user.email} has been deleted.')
-    return redirect(url_for('admin_dashboard'))
-
 
 @app.route('/delete_user/<int:user_id>', endpoint='delete_user_by_id')
 def delete_user(user_id):
