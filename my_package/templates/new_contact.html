@@ -1,0 +1,54 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="container">
+    <h2>Add New Contact</h2>
+    <form action="/add_new_contact" method="post">
+        <div class="mb-3">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" required>
+        </div>
+        <div class="mb-3">
+            <label for="contactlastname" class="form-label">Last Name</label>
+            <input class="form-control" id="contactlastname" name="contactlastname" >
+        </div>
+        <!-- More fields like last name, email, phone, etc. -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required>
+        </div>
+        <div class="mb-3">
+            <label for="contactbillingaddress" class="form-label">Billing Address</label>
+            <input class="form-control" id="contactbillingaddress" name="contactbillingaddress" >
+        </div>
+        <div class="mb-3">
+            <label for="contactbillingaddresscity" class="form-label">Billing Address City</label>
+            <input class="form-control" id="contactbillingaddresscity" name="contactbillingaddresscity" >
+        </div>
+        <div class="mb-3">
+            <label for="contactbillingaddressstate" class="form-label">Billing Address State</label>
+            <input class="form-control" id="contactbillingaddressstate" name="contactbillingaddressstate" >
+        </div>
+        <div class="mb-3">
+            <label for="contactbillingaddresscountry" class="form-label">Billing Address Country</label>
+            <input class="form-control" id="contactbillingaddresscountry" name="contactbillingaddresscountry" >
+        </div>
+        <div class="mb-3">
+            <label for="contactbillingaddresszip" class="form-label">Billing Address ZIP</label>
+            <input class="form-control" id="contactbillingaddresszip" name="contactbillingaddresszip" >
+        </div>
+        <div class="mb-3">
+            <label for="leadstatus" class="form-label">Lead Status</label>
+            <input class="form-control" id="leadstatus" name="leadstatus" >
+        </div>
+        <div class="mb-3">
+            <label for="contactcompany" class="form-label">Company</label>
+            <input class="form-control" id="contactcompany" name="contactcompany" >
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Add Contact</button>
+    </form>
+</div>
+{% endblock %}

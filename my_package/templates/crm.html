@@ -14,6 +14,7 @@
     </div>
     <div class="crm-inner-page">
         <div class="crm-upper-static">
+            <a href="{{ url_for('new_contact') }}"><button class="add-new-contact-btn">Add New Contact</button></a>
             <form method="POST" enctype="multipart/form-data">
                 <input class="upload-csv" type="file" name="csv" accept=".csv, .xlsx">
                 <input class="upload" type="submit" value="upload">

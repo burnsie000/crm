@@ -1089,3 +1089,19 @@ input[type=file]::file-selector-button {
   color: #F5E400;
   background-color: rgb(28,28,28)
 }
+.add-new-contact-btn {
+  height: 3em;
+  width: 10em;
+  border-radius: 1.5em;
+  background-color: #f5e400;
+  color: black;
+  border: transparent;
+  padding-left: 1em;
+  padding-right: 1em;
+  font-weight: bolder;
+  display: inline-block;
+  position: relative;
+  margin-left: 8em;
+  margin-top: 1em;
+  top: 4em;
+}

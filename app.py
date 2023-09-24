@@ -48,6 +48,48 @@ def home ():
     name = '30 Days Of Python Programming'
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
+@app.route('/new_contact', methods=['GET'])
+@login_required
+def new_contact():
+    return render_template('new_contact.html', user=current_user)
+
+@app.route('/add_new_contact', methods=['POST'])
+@login_required
+def add_new_contact():
+    first_name = request.form.get('firstName')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    contactbillingaddress = request.form.get('contactbillingaddress')
+    contactbillingaddresscity = request.form.get('contactbillingaddresscity')
+    contactbillingaddressstate = request.form.get('contactbillingaddressstate')
+    contactbillingaddresscountry = request.form.get('contactbillingaddresscountry')
+    contactbillingaddresszip = request.form.get('contactbillingaddresszip')
+    leadstatus = request.form.get('leadstatus')
+    contactcompany = request.form.get('contactcompany')
+    contactlastname = request.form.get('contactlastname')
+
+    # More fields ...
+
+    new_contact = CRM(
+        contactname=first_name,
+        contactemail=email,
+        contactphone=phone,
+        contactbillingaddress=contactbillingaddress,
+        contactbillingaddresscity=contactbillingaddresscity,
+        contactbillingaddressstate=contactbillingaddressstate,
+        contactbillingaddresscountry=contactbillingaddresscountry,
+        contactbillingaddresszip=contactbillingaddresszip,
+        leadstatus=leadstatus,
+        contactcompany=contactcompany,
+        contactlastname=contactlastname,
+        organization_id=current_user.organization_id  # Ensures the contact is shared within the organization
+    )
+    db.session.add(new_contact)
+    db.session.commit()
+    
+    flash('New contact added successfully.', 'success')
+    return redirect(url_for('crm'))  # Redirecting back to the CRM page
+
 @app.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
