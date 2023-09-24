@@ -1070,3 +1070,6 @@ input[type=file]::file-selector-button {
   scale: 0.75;
   transition: 0.15s;
 }
+.nav-item, .dropdown {
+  margin-left: 2em;
+}

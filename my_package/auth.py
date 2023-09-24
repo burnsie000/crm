@@ -85,4 +85,4 @@ def sign_up():
             return render_template('login.html', user=current_user)
 
     else:
-        return render_template('sign-up.html', user=current_user)
+        return render_template('sign-up.html')
