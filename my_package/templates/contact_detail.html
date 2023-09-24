@@ -14,8 +14,24 @@
     <div class="profile-picture profile-picture-details">{{ initials }}</div>
     <div class="contact-details-txt">
         <h1 class="contact-details-header">Contact Details</h1>
-        <p class="contact-details">Contact: {{ contact.Contact }}</p>
-        <p class="contact-details">Phone/Email: {{ contact.PhoneEmail }}</p>
+        <p class="contact-details">Contact: 
+            {% if contact.contactfirstname and contact.contactlastname %}
+                {{ contact.contactfirstname }} {{ contact.contactlastname }}
+            {% elif contact.contactcompany %}
+                {{ contact.contactcompany }}
+            {% else %}
+                {{ contact.Contact }}
+            {% endif %}</p>
+        <p class="contact-details">Phone/Email: 
+            {% if contact.contactphone and contact.contactemail %}
+                {{ contact.contactphone }} / {{ contact.contactemail }}
+            {% elif contact.contactphone %}
+                {{ contact.contactphone }}
+            {% elif contact.contactemail %}
+                {{ contact.contactemail }}
+            {% else %}
+                No phone or email available
+            {% endif %}</p>
         <p class="contact-details">Tags: 
             <ul class="contact-tags">
                 {% for tag in contact.tags %}

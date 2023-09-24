@@ -38,7 +38,7 @@
                         {% elif lastname %}
                             {% set initials = lastname[-1].upper() %}
                         {% else %}
-                            {% set initials = contact.Contact[:2].upper() if contact.Contact else contact.contactcompany[-1] %}
+                            {% set initials = contact.Contact[:2].upper() if contact.Contact else contact.contactcompany[-1].upper() %}
                         {% endif %}
                         <div class="center-div">
                             <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
