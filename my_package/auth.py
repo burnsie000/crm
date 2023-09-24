@@ -48,7 +48,7 @@ def sign_up():
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email already exists!', category='error')
-        elif len(email) == 0:
+        elif len(email) < 2:
             flash('Email must be greater than 3 characters.', category='error')
         elif len(firstname) < 2:
             flash('First name must be greater than 1 characters.', category='error')
@@ -63,11 +63,21 @@ def sign_up():
         elif len(password) < 8:
             flash('Password must be greater than 7 characters.', category='error')
         else:
+           # Check if this is the first user in the organization
+            is_first_user_in_org = User.query.filter_by(company=company).count() == 0
+
             # add user to database
-            new_user = User(email=email, firstname=firstname, lastname=lastname, phonenumber=phonenumber, password=generate_password_hash(password, method="sha256"), company=company)
+            new_user = User(
+                email=email, 
+                firstname=firstname, 
+                lastname=lastname, 
+                phonenumber=phonenumber, 
+                password=generate_password_hash(password, method="sha256"), 
+                company=company,
+                is_admin=True if is_first_user_in_org else False  # Set admin status
+            )
             db.session.add(new_user)
             db.session.commit()
-            flash('Account Created!', category='success')
             login_user(new_user, remember=True)
             return render_template('crm.html', user=current_user)
 

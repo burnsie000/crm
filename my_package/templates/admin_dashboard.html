@@ -1,0 +1,32 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>Admin Dashboard</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.firstname }}</td>
+            <td>{{ user.lastname }}</td>
+            <td>{{ user.phonenumber }}</td>
+            <td>
+                {% if not user.is_admin %}
+                <a href="{{ url_for('promote_to_admin', user_id=user.id) }}">Promote to Admin</a>
+                <a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

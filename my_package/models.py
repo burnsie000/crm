@@ -28,6 +28,7 @@ class User(db.Model, UserMixin):
     crm = db.relationship('CRM', back_populates='user')  # Changed from 'Note' to 'CRM'
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     organization = db.relationship('Organization', back_populates='users')
+    is_admin = db.Column(db.Boolean, default=False)
 
 class CRM(db.Model):
     __tablename__ = 'CRM'

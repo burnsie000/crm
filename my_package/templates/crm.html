@@ -30,6 +30,7 @@
                 </tr>
                 {% if pages and pages[-1] < total_pages %}
                 {% for contact in contacts %}
+                    {% if contact.user.organization_id == current_user.organization_id %}
                 <tr class="crm-info-row" data-href="{{ url_for('contact_detail', id=contact.id) }}">
                     <td class="crm-info">
                         {% set initials = '' %}
@@ -80,6 +81,7 @@
                             {% endfor %}
                         </ul>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>

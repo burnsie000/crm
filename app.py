@@ -48,6 +48,73 @@ def home ():
     name = '30 Days Of Python Programming'
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if not current_user.is_admin:
+        flash('Access unauthorized.')
+        return redirect(url_for('home'))
+
+    users_in_org = User.query.filter_by(organization_id=current_user.organization_id).all()
+    return render_template('admin_dashboard.html', users=users_in_org, user=current_user)
+
+@app.route('/promote_to_admin/<int:user_id>')
+def promote_to_admin(user_id):
+    if not current_user.is_admin:
+        flash('Access unauthorized.')
+        return redirect(url_for('admin_dashboard'))
+
+    user = User.query.get(user_id)
+    user.is_admin = True
+    db.session.commit()
+
+    flash(f'User {user.email} has been promoted to admin.')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/delete_user/<int:user_id>')
+def delete_user(user_id):
+    if not current_user.is_admin:
+        flash('Access unauthorized.')
+        return redirect(url_for('admin_dashboard'))
+
+    user = User.query.get(user_id)
+    if user.is_admin:
+        flash('Cannot delete an admin.')
+        return redirect(url_for('admin_dashboard'))
+
+    # Your logic to delete the user's CSV data here
+
+    db.session.delete(user)
+    db.session.commit()
+
+    flash(f'User {user.email} has been deleted.')
+    return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/delete_user/<int:user_id>', endpoint='delete_user_by_id')
+def delete_user(user_id):
+    if not current_user.is_admin:
+        flash('Access unauthorized.')
+        return redirect(url_for('admin_dashboard'))
+
+    user = User.query.get(user_id)
+    if user.is_admin:
+        flash('Cannot delete an admin.')
+        return redirect(url_for('admin_dashboard'))
+
+    # Logic to delete the user's CSV data
+    csv_file_path = f'/my_package/static/css/csv/{user_id}.csv'  # Replace with the actual path and file naming convention
+    if os.path.exists(csv_file_path):
+        os.remove(csv_file_path)
+    else:
+        flash('CSV file not found. Continuing with user deletion.')
+
+    db.session.delete(user)
+    db.session.commit()
+
+    flash(f'User {user.email} and associated CSV data have been deleted.')
+    return redirect(url_for('admin_dashboard'))
+
+
 @app.route('/upcoming_due_dates', methods=['GET'])
 @login_required
 def upcoming_due_dates():
@@ -107,13 +174,23 @@ def send_email(subject, recipient, body):
         return False
 
 @app.route('/invite_user', methods=['GET', 'POST'])
+@login_required  # Ensure the user is logged in
 def invite_user():
+    if not current_user.is_authenticated:
+        flash('You need to be logged in to invite users.', 'danger')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         email = request.form['email']
 
+        if hasattr(current_user, 'organization_id'):  # Make sure the attribute exists
+            organization_id = current_user.organization_id
+        else:
+            flash('Your account does not have an associated organization.', 'danger')
+            return redirect(url_for('home'))
+
         # Generate a secure token
-        data = {'email': email, 'organization_id': current_user.organization_id}
-        token = s.dumps(data, salt='email-invite')
+        token = s.dumps({'email': email, 'organization_id': organization_id}, salt='email-invite')
 
         # Generate the URL for email
         invitation_link = url_for('accept_invite', token=token, _external=True)
@@ -121,6 +198,7 @@ def invite_user():
         subject = "You're Invited to Join Our Organization"
         body = f'You have been invited to join our organization. Click the link to accept: {invitation_link}'
 
+        # Assuming you have a function send_email() that sends the email
         if send_email(subject, email, body):
             flash('Invitation sent successfully.', 'success')
         else:
@@ -147,6 +225,9 @@ def accept_invite(token):
     
     print("Email from token:", email)
     print("All emails in DB:", [u.email for u in all_users])
+    print("Type of email:", type(email))
+
+    email = str(email)  # Convert the email to a string
 
     if request.method == 'POST':
         password = request.form['password']
