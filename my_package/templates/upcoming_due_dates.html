@@ -1,0 +1,126 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="crm-page">
+    <div class="crm-menu">
+        <div class="contacts-block">
+            <a class="contacts-link" href="/CRM">
+                <span class="contacts">Contacts</span>
+            </a>
+        </div>
+        <div class="contacts-block">
+            <a class="contacts-link" href="/upcoming_due_dates">
+                <span class="contacts">Tasks</span>
+            </a>
+        </div>
+    </div>
+    <div class="crm-inner-page">
+        <div class="crm-upper-static">
+            
+        </div>
+        <div class="crm-contacts">
+            <table class="contacts-section">
+                <tr class="crm-header">
+                    <th class="crm-header-item">Profile</th>
+                    <th class="crm-header-item">Contact</th>
+                    <th class="crm-header-item">Phone/Email</th>
+                    <th class="crm-header-item">Due Date</th>
+                    <th class="crm-header-item">Tags</th>
+                </tr>
+            
+                {% if contacts_with_due_dates and total_pages is defined %}
+                    {% for contact, note in contacts_with_due_dates %}
+                    <tr class="crm-info-row" data-href="{{ url_for('contact_detail', id=contact.id) }}">
+                        <td class="crm-info">
+                            {% set initials = '' %}
+                        {% if contact.Contact %}
+                            {% set names = contact.Contact.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper() + names[2][0].upper() if names|length > 1 and names[1] else names[0][-1].upper()) %}
+                        {% elif contact.contactcompany %}
+                            {% set names = contact.contactcompany.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper())%}
+                        {% elif contact.contactfirstname and contact.contactlastname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactlastname[0].upper() %}
+                        {% elif contact.contactfirstname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactfirstname[-1].upper() %}
+                        {% elif contact.contactlastname %}
+                            {% set initials = contact.contactlastname[0].upper() + contact.contactlastname[-1].upper() %}
+                        {% else %}
+                            {% set initials = 'XX' %}
+                        {% endif %}
+                            <div class="center-div">
+                                <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
+                                    <div class="profile-picture" data-initial="{{ initials }}"></div>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="crm-info">
+                            <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
+                                <a> 
+                                    {% if contact.contactfirstname and contact.contactlastname%}
+                                        {{ contact.contactfirstname }} 
+                                    {% elif contact.contactcompany %}
+                                    {{ contact.contactcompany }}
+                                    {% else %}
+                                        {{ contact.Contact }}
+                                    {% endif %}
+                                    </a>
+                            </a>
+                        </td>
+                        <td class="crm-info">
+                            <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
+                                {{ contact.contactphone }} / {{ contact.contactemail }}
+                            </a>
+                        </td>
+                        <td class="crm-info">
+                            {{ note.due_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </td>
+                        <td class="crm-info">
+                            <ul class="tag-list">
+                                {% for tag in contact.tags %}
+                                    <a class="tag-btn">{{ tag.name }}</a>
+                                {% else %}
+                                    <p class="tag-btn-none">No tags</p>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">No contacts with upcoming due dates.</td>
+                    </tr>
+                {% endif %}
+            </table>
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item {% if not prev_url %}disabled{% endif %}">
+                        <a class="page-link" {% if prev_url %}href="{{ prev_url }}"{% endif %}>Previous</a>
+                    </li>
+                    {% for page_num in pages %}
+                        <li class="page-item {% if page_num == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('upcoming_due_dates', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="page-item {% if not next_url %}disabled{% endif %}">
+                        <a class="page-link" {% if next_url %}href="{{ next_url }}"{% endif %}>Next</a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+        var rows = document.querySelectorAll(".crm-info-row");
+        rows.forEach(function(row){
+            row.addEventListener("click", function(){
+                window.location.href = this.getAttribute("data-href");
+            });
+        });
+    });
+</script>
+{% endblock %}

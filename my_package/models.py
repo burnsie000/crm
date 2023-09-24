@@ -10,6 +10,13 @@ crm_tags = Table('crm_tags', db.Model.metadata,
     Column('tag_id', Integer, ForeignKey('Tags.id'), primary_key=True)
 )
 
+class Organization(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), unique=True)
+    users = db.relationship('User', back_populates='organization')
+    contacts = db.relationship('CRM', back_populates='organization')
+    notes = db.relationship('Note', back_populates='organization')
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
@@ -19,6 +26,8 @@ class User(db.Model, UserMixin):
     phonenumber = db.Column(db.String(20))
     company = db.Column(db.String(150))
     crm = db.relationship('CRM', back_populates='user')  # Changed from 'Note' to 'CRM'
+    organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
+    organization = db.relationship('Organization', back_populates='users')
 
 class CRM(db.Model):
     __tablename__ = 'CRM'
@@ -41,6 +50,8 @@ class CRM(db.Model):
     contactemail = db.Column(db.String(10000))
     contactphone = db.Column(db.String(10000))
     contactcompany = db.Column(db.String(10000))
+    organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
+    organization = db.relationship('Organization', back_populates='contacts')
 
 
 class Tags(db.Model):
@@ -55,7 +66,6 @@ class Note(db.Model):
     content = db.Column(db.String(10000))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     contact_id = db.Column(db.Integer, db.ForeignKey('CRM.id'))
-    due_date = db.Column(db.DateTime, nullable=True)
-
-
-   
+    due_date = db.Column(db.DateTime(timezone=True), nullable=True)
+    organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
+    organization = db.relationship('Organization', back_populates='notes')

@@ -2,8 +2,13 @@
 <div class="crm-page">
     <div class="crm-menu">
         <div class="contacts-block">
-            <a>
+            <a class="contacts-link" href="/CRM">
                 <span class="contacts">Contacts</span>
+            </a>
+        </div>
+        <div class="contacts-block">
+            <a class="contacts-link" href="/upcoming_due_dates">
+                <span class="contacts">Tasks</span>
             </a>
         </div>
     </div>
@@ -27,19 +32,24 @@
                 {% for contact in contacts %}
                 <tr class="crm-info-row" data-href="{{ url_for('contact_detail', id=contact.id) }}">
                     <td class="crm-info">
-                        {% set firstname = contact.contactname if contact.contactname else '' %}
-                        {% set lastname = contact.contactlastname if contact.contactlastname else '' %}
                         {% set initials = '' %}
-
-                        {% if firstname and lastname %}
-                            {% set initials = firstname[-1].upper() + lastname[0].upper() %}
-                        {% elif firstname %}
-                            {% set initials = firstname[-1].upper() %}
-                        {% elif lastname %}
-                            {% set initials = lastname[-1].upper() %}
+                        {% if contact.Contact %}
+                            {% set names = contact.Contact.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper() + names[2][0].upper() if names|length > 1 and names[1] else names[0][-1].upper()) %}
+                        {% elif contact.contactcompany %}
+                            {% set names = contact.contactcompany.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper())%}
+                        {% elif contact.contactfirstname and contact.contactlastname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactlastname[0].upper() %}
+                        {% elif contact.contactfirstname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactfirstname[-1].upper() %}
+                        {% elif contact.contactlastname %}
+                            {% set initials = contact.contactlastname[0].upper() + contact.contactlastname[-1].upper() %}
                         {% else %}
-                            {% set initials = contact.Contact[:2].upper() if contact.Contact else contact.contactcompany[-1].upper() %}
-                        {% endif %}
+                            {% set initials = 'XX' %}
+                        {% endif %}            
                         <div class="center-div">
                             <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
                                 <div class="profile-picture" data-initial="{{ initials }}"></div>
@@ -47,13 +57,16 @@
                         </div>
                     </td>
                     <td class="crm-info"><a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
+                        <a> 
                         {% if contact.contactfirstname and contact.contactlastname%}
                             {{ contact.contactfirstname }} 
                         {% elif contact.contactcompany %}
                         {{ contact.contactcompany }}
                         {% else %}
                             {{ contact.Contact }}
-                        {% endif %}</a></td>
+                        {% endif %}
+                        </a>
+                    </td>
                     <td class="crm-info"><a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">{{ contact.contactphone }}<br>{{ contact.contactemail }}</a></td>
                     <td class="crm-info">
                         {{ latest_notes.get(contact.id, "No notes") }}
