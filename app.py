@@ -154,15 +154,27 @@ def crm():
                                 tag = Tags(name=tag_name)
                                 db.session.add(tag)
                             tags.append(tag)
-                    
-                    new_contact = CRM(
-                        Contact=row.get('Contact'),
-                        PhoneEmail=row.get('PhoneEmail'),
-                        tags=tags,
-                        user_id=current_user.id
-                    )
-                    db.session.add(new_contact)
-                db.session.commit()
+                    contactname = row.get('First Name', '').strip()  # Assuming the CSV column is named "FirstName"
+                    contactcompany = row.get('Company Name', '').strip()  # Assuming the CSV column is named "CompanyName"
+                    if contactname or contactcompany:
+                        new_contact = CRM(
+                            Contact=row.get('First Name'),
+                            PhoneEmail=row.get('PhoneEmail'),
+                            tags=tags,
+                            user_id=current_user.id,
+                            contactlastname=row.get('Last Name'),
+                            contactbillingaddress=row.get('Billing Address'),
+                            contactbillingaddresscity=row.get('Billing Address City'),
+                            contactbillingaddressstate=row.get('Billing Address State'),
+                            contactbillingaddresscountry=row.get('Billing Address Country'),
+                            contactbillingaddresszip=row.get('Billing Address Postal Code'),
+                            leadstatus=row.get('Lead Status'),
+                            contactemail=row.get('Email'),
+                            contactphone=row.get('Phone'),
+                            contactcompany=row.get('Company Name')
+                        )
+                        db.session.add(new_contact)
+                    db.session.commit()
 
     page = request.args.get('page', 1, type=int)
     

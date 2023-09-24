@@ -30,7 +30,18 @@ class CRM(db.Model):
     PhoneEmail = db.Column(db.String(10000))
     tags = db.relationship('Tags', secondary=crm_tags, lazy='subquery', back_populates='contacts')
     notes = db.relationship('Note', backref='contact', lazy=True)
-    user =db.relationship('User', back_populates='crm')
+    user = db.relationship('User', back_populates='crm')
+    contactlastname = db.Column(db.String(10000))
+    contactbillingaddress = db.Column(db.String(10000))
+    contactbillingaddresscity = db.Column(db.String(10000))
+    contactbillingaddressstate = db.Column(db.String(10000))
+    contactbillingaddresscountry = db.Column(db.String(10000))
+    contactbillingaddresszip = db.Column(db.String(10000))
+    leadstatus = db.Column(db.String(10000))
+    contactemail = db.Column(db.String(10000))
+    contactphone = db.Column(db.String(10000))
+    contactcompany = db.Column(db.String(10000))
+
 
 class Tags(db.Model):
     __tablename__ = 'Tags'
