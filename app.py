@@ -49,10 +49,13 @@ def home ():
     return render_template('home.html', techs=techs, name = name, title = 'Home', user=current_user)
 
 @app.route('/admin_dashboard')
+@login_required
 def admin_dashboard():
-    if not current_user.is_admin:
-        flash('Access unauthorized.')
-        return redirect(url_for('home'))
+    if not current_user.is_authenticated:  # Check if the user is authenticated
+        return redirect(url_for('login'))  # Redirect to login page if not authenticated
+    
+    if not current_user.is_admin:  # Now safe to check for admin status
+        return "You're not an admin!"
 
     users_in_org = User.query.filter_by(organization_id=current_user.organization_id).all()
     return render_template('admin_dashboard.html', users=users_in_org, user=current_user)
@@ -134,81 +137,72 @@ def upcoming_due_dates():
 
 
 s = URLSafeTimedSerializer(app.secret_key)
-
 def send_email(subject, recipient, body):
-    sender = 'goaliebrady00@gmail.com'
-    password = 'cmvu lgly jwqa lkre'
+        sender = 'goaliebrady00@gmail.com'
+        password = 'cmvu lgly jwqa lkre'
 
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = recipient
+        msg = MIMEText(body)
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = recipient
 
-    try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.login(sender, password)
-        server.sendmail(sender, recipient, msg.as_string())
-        server.quit()
-        return True
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return False
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.login(sender, password)
+            server.sendmail(sender, recipient, msg.as_string())
+            server.quit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
 @app.route('/invite_user', methods=['GET', 'POST'])
-@login_required  # Ensure the user is logged in
+@login_required
 def invite_user():
-    if not current_user.is_authenticated:
-        flash('You need to be logged in to invite users.', 'danger')
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        email = request.form['email']
-
-        if hasattr(current_user, 'organization_id'):  # Make sure the attribute exists
+    if current_user.is_admin:
+        if request.method == 'POST':
+            email = request.form['email']
             organization_id = current_user.organization_id
-        else:
-            flash('Your account does not have an associated organization.', 'danger')
-            return redirect(url_for('home'))
 
-        # Generate a secure token
-        token = s.dumps({'email': email, 'organization_id': organization_id}, salt='email-invite')
+            # DEBUGGING
+            print(f"Debug: Organization ID before token: {organization_id}")
+            
+            token = s.dumps({'email': email, 'organization_id': organization_id}, salt='email-invite')
+            invitation_link = url_for('accept_invite', token=token, _external=True)
 
-        # Generate the URL for email
-        invitation_link = url_for('accept_invite', token=token, _external=True)
+            subject = "You're Invited to Join Our Organization"
+            body = f'You have been invited to join our organization. Click the link to accept: {invitation_link}'
 
-        subject = "You're Invited to Join Our Organization"
-        body = f'You have been invited to join our organization. Click the link to accept: {invitation_link}'
+            # Assuming you have a send_email function
+            if send_email(subject, email, body):
+                flash('Invitation sent successfully.', 'success')
+            else:
+                flash('An error occurred while sending the invitation.', 'danger')
 
-        # Assuming you have a function send_email() that sends the email
-        if send_email(subject, email, body):
-            flash('Invitation sent successfully.', 'success')
-        else:
-            flash('An error occurred while sending the invitation.', 'danger')
+            return redirect(url_for('invite_user'))
 
-        return redirect(url_for('invite_user'))
-
-    return render_template('invite_user.html', user=current_user)
+        return render_template('invite_user.html', user=current_user)
+    else:
+        flash('You do not have permission to invite users.', 'danger')
+        return redirect(url_for('home'))
 
 @app.route('/accept_invite/<token>', methods=['GET', 'POST'])
 def accept_invite(token):
-    s = URLSafeTimedSerializer(app.secret_key)
-    
-    all_users = User.query.all()
-
     try:
-        email = s.loads(token, max_age=3600, salt='email-invite')  # Token expires after 1 hour
+        email = s.loads(token, max_age=3600, salt='email-invite')
     except SignatureExpired:
         flash('The invitation link has expired.')
         return redirect(url_for('home'))
     except BadTimeSignature:
         flash('Invalid invitation link.')
         return redirect(url_for('home'))
-    
-    print("Email from token:", email)
-    print("All emails in DB:", [u.email for u in all_users])
-    print("Type of email:", type(email))
 
-    email = str(email)  # Convert the email to a string
+    invited_email = email.get('email', None)
+    organization_id = email.get('organization_id', None)
+    
+    # Debugging
+    print(f"Debug: Invited Email: {invited_email}")
+    print(f"Debug: Organization ID: {organization_id}")
 
     if request.method == 'POST':
         password = request.form['password']
@@ -216,41 +210,35 @@ def accept_invite(token):
         lastname = request.form['lastname']
         phonenumber = request.form['phonenumber']
         company = request.form['company']
-        
-        # Hash the password
+
         hashed_password = generate_password_hash(password, method='sha256')
-        
-        # Fetch the organization_id from the inviting user
-        inviting_user = User.query.filter_by(email=email).first()
-        
-        if inviting_user is None:
-            flash(f'Inviting user not found for email: {email}')
-            return redirect(url_for('home'))
-        
-        if inviting_user.organization:
-            organization_id = inviting_user.organization.id
-        else:
-            flash('Organization not found for inviting user.')
+
+        organization = Organization.query.filter_by(id=organization_id).first()
+        if organization is None:
+            flash('Organization not found.')
             return redirect(url_for('home'))
 
-        # Create the new user
         new_user = User(
-            email=email,
+            email=invited_email,
             password=hashed_password,
             firstname=firstname,
             lastname=lastname,
             phonenumber=phonenumber,
             company=company,
-            organization_id=organization_id  # Setting the organization_id to be the same as the inviting user
+            organization_id=organization_id
         )
+
+        # Debugging
+        print(f"Debug: New User: {new_user}")
         
         db.session.add(new_user)
         db.session.commit()
-        
+
         flash('You have successfully joined the organization.')
-        return redirect(url_for('login'))
-    
-    return render_template('accept_invite.html', email=email, token=token, user=current_user)  # Removed 'user=current_user' as it's not used in this route
+        return redirect(url_for('auth.login'))
+
+    return render_template('accept_invite.html', email=invited_email, token=token, user=current_user)
+
 
 
 @app.route('/delete_empty_contacts', methods=['GET'])
@@ -311,7 +299,9 @@ def delete_contact(contact_id):
 @login_required  # Assuming you're using Flask-Login
 def save_notes(id):
     contact = CRM.query.get_or_404(id)
-    if contact.user_id == current_user.id:
+    
+    # Check if the contact belongs to the same organization as the current user
+    if contact.organization_id == current_user.organization_id:
         due_date_str = request.form.get('due_date')
         due_date = datetime.strptime(due_date_str, '%Y-%m-%d') if due_date_str else None
         new_note = Note(
@@ -322,7 +312,10 @@ def save_notes(id):
         )
         db.session.add(new_note)
         db.session.commit()
-        return redirect(url_for('contact_detail', id=id))
+        return redirect(url_for('contact_detail', id=id))  # Replace with the actual endpoint
+    else:
+        flash('You do not have permission to add a note to this contact.', 'error')
+        return redirect(url_for('dashboard'))  # Redirect to a valid endpoint
 
 # app.py
 @app.route('/contact_detail/<int:id>')

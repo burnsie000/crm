@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db
+from .models import db, User, Organization
 from flask_login import login_user, login_required, logout_user, current_user
 
 
@@ -65,7 +65,9 @@ def sign_up():
         else:
            # Check if this is the first user in the organization
             is_first_user_in_org = User.query.filter_by(company=company).count() == 0
-
+            new_organization = Organization(name=company)
+            db.session.add(new_organization)
+            db.session.flush() 
             # add user to database
             new_user = User(
                 email=email, 
@@ -74,11 +76,13 @@ def sign_up():
                 phonenumber=phonenumber, 
                 password=generate_password_hash(password, method="sha256"), 
                 company=company,
-                is_admin=True if is_first_user_in_org else False  # Set admin status
+                is_admin=True,
+                organization_id=new_organization.id
             )
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            return render_template('crm.html', user=current_user)
+            return render_template('login.html', user=current_user)
 
-    return render_template('sign-up.html', user=current_user)
+    else:
+        return render_template('sign-up.html', user=current_user)

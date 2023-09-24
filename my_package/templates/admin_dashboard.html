@@ -19,10 +19,13 @@
             <td>{{ user.firstname }}</td>
             <td>{{ user.lastname }}</td>
             <td>{{ user.phonenumber }}</td>
+            <td>{{ user.is_admin }}</td>
             <td>
-                {% if not user.is_admin %}
-                <a href="{{ url_for('promote_to_admin', user_id=user.id) }}">Promote to Admin</a>
-                <a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a>
+                {% if current_user.is_admin %}
+                    {% if not user.is_admin %}
+                        <a href="{{ url_for('promote_to_admin', user_id=user.id) }}"><button>Promote to Admin</button></a>
+                        <a href="{{ url_for('delete_user_by_id', user_id=user.id) }}"><button>Delete</button></a>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>
