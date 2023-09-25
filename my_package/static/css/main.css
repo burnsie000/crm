@@ -1246,3 +1246,14 @@ input[type=file]::file-selector-button {
   border: transparent;
   outline: none;
 }
+.forgot-password-link {
+  margin-left: 6em;
+  color: #F5E400;
+  text-decoration: none;
+}
+.forgot-password-link:hover {
+  margin-left: 6em;
+  color: #F5E400;
+  text-decoration-color: #f5e400;
+  transition: 0.15s;
+}

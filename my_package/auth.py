@@ -77,6 +77,17 @@ def confirm_email(token):
 
     return render_template('email_verification_success.html', user=current_user)
 
+def send_email(subject, recipients, html_body):
+    msg = MIMEText(html_body, 'html')
+    msg['Subject'] = subject
+    msg['From'] = 'goaliebrady00@gmail.com'
+    msg['To'] = ', '.join(recipients)
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('goaliebrady00@gmail.com', 'cmvu lgly jwqa lkre')
+    server.sendmail('goaliebrady00@gmail.com', recipients, msg.as_string())
+    server.quit()
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -176,3 +187,42 @@ def sign_up():
             return render_template('login.html', user=current_user)
 
     return render_template('sign-up.html', user=current_user)
+
+# ... (other imports and configurations)
+
+@auth.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            token = generate_confirmation_token(email)
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+            html = render_template('reset_password_email.html', reset_url=reset_url, user=current_user)
+            send_email('Reset Your Password', [user.email], html)
+            flash('A password reset email has been sent.', 'success')
+        else:
+            flash('Email does not exist.', 'error')
+    return render_template('forgot_password.html', user=current_user)
+
+@auth.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email = confirm_token(token)
+    if not email:
+        flash('Invalid or expired token', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if new_password == confirm_password:
+            user = User.query.filter_by(email=email).first()
+            user.password = generate_password_hash(new_password, method='sha256')
+            db.session.commit()
+            flash('Your password has been updated.', 'success')
+            return redirect(url_for('auth.login'))
+        else:
+            flash('Passwords do not match.', 'error')
+    return render_template('reset_password.html', user=current_user)
