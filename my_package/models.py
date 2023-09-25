@@ -2,7 +2,7 @@ from .__init__ import db, metadata
 from datetime import datetime
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-from sqlalchemy import Table, Column, Integer, ForeignKey, MetaData
+from sqlalchemy import Table, Column, Integer, ForeignKey, MetaData, Boolean, DateTime
 
 # Define a many-to-many table for the relationship between CRM and Tag
 crm_tags = Table('crm_tags', db.Model.metadata,
@@ -29,6 +29,8 @@ class User(db.Model, UserMixin):
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     organization = db.relationship('Organization', back_populates='users')
     is_admin = db.Column(db.Boolean, default=False)
+    email_confirmed = db.Column(Boolean, nullable=False, default=False)
+    email_confirmed_on = db.Column(DateTime, nullable=True)
 
 class CRM(db.Model):
     __tablename__ = 'CRM'

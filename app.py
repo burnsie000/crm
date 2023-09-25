@@ -1,5 +1,5 @@
 # let's import the flask
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, render_template_string
 import os # importing operating system module
 import os
 from my_package.__init__ import create_app
@@ -34,12 +34,11 @@ def load_user(id):
     return User.query.get(int(id))
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['SECRET_KEY'] = '823r9h2983hrf23j89fj29r8329'
+app.config['SECURITY_PASSWORD_SALT'] = 'some_random_salt'
 
 
 app.secret_key = '823r9h2983hrf23j89fj29r8329'
-
-from my_package.auth import auth
-from my_package.views import views 
 
 
 @app.route('/') # this decorator create the home route
@@ -461,8 +460,9 @@ def crm():
     pages_to_show = 5
     pages = [page for page in range(current_page, min(current_page + pages_to_show, total_pages + 1))]
     print("Contacts to be rendered: ", contacts.items)
-
+    print(f"Pages list before rendering: {pages}")
     return render_template('crm.html', contacts=contacts.items, latest_notes=latest_notes, next_url=next_url, prev_url=prev_url, pages=pages, total_pages=total_pages, user=current_user, current_page=current_page)
+
 
 @app.route('/csv/<filename>')
 def uploaded_csv(filename):
@@ -472,9 +472,9 @@ def uploaded_csv(filename):
 def pricing ():
     return render_template('pricing.html', user=current_user)
 
+
 if __name__ == '__main__':
     # for deployment
     # to make it work for both production and development
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='127.0.0.1', port=port)
-

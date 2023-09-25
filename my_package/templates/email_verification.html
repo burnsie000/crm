@@ -1,0 +1,6 @@
+{% extends 'layout.html' %} {% block content %}
+    <h1>Hello {{ firstname }},</h1>
+    <p>Thank you for signing up. Please verify your email address by clicking on the link below:</p>
+    <a href="{{ verification_url }}">Verify</a>
+    <p>If you did not request this verification, please ignore this email.</p>
+{% endblock %}

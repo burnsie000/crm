@@ -104,7 +104,8 @@
                     <a class="page-item-crm" href="{{ url_for('crm', page=page) }}&search={{ request.args.get('search', '') }}">{{ page }}</a>
                 {% endfor %}
             
-                {% if pages[-1] < total_pages %}
+                {% if pages and pages[-1] < total_pages %}
+
                     <span class="three-dots">. . .</span>
                     <a class="total-pages" href="{{ url_for('crm', page=total_pages) }}">{{ total_pages }}</a>
                 {% endif %} 
