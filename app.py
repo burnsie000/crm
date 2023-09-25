@@ -1,5 +1,5 @@
 # let's import the flask
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import os # importing operating system module
 import os
 from my_package.__init__ import create_app
@@ -10,7 +10,7 @@ from flask import send_from_directory
 import csv
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import desc, asc
+from sqlalchemy import desc, asc, or_
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from datetime import datetime
 from math import ceil
@@ -371,6 +371,7 @@ def contact_detail(id):
 @app.route('/CRM', methods=['GET', 'POST'])
 @login_required
 def crm():
+    search_query = request.args.get('search', '').strip()
     if request.method == 'POST':
         csv_file_upload = request.files['csv']
         
@@ -420,9 +421,29 @@ def crm():
                     db.session.commit()
 
     page = request.args.get('page', 1, type=int)
-    
-    contacts = (CRM.query
-                .filter_by(organization_id=current_user.organization_id)
+    query = CRM.query.filter_by(organization_id=current_user.organization_id)
+    if search_query:
+        query = query.filter(
+            or_(
+                CRM.Contact.ilike(f'%{search_query}%'),
+                CRM.PhoneEmail.ilike(f'%{search_query}%'),
+                CRM.contactcompany.ilike(f'%{search_query}%'),
+                CRM.contactlastname.ilike(f'%{search_query}%'),
+                CRM.contactemail.ilike(f'%{search_query}%'),
+                CRM.contactphone.ilike(f'%{search_query}%'),
+                CRM.contactbillingaddress.ilike(f'%{search_query}%'),
+                CRM.contactbillingaddresscity.ilike(f'%{search_query}%'),
+                CRM.contactbillingaddressstate.ilike(f'%{search_query}%'),
+                CRM.contactbillingaddresscountry.ilike(f'%{search_query}%'),
+                CRM.contactbillingaddresszip.ilike(f'%{search_query}%'),
+                CRM.leadstatus.ilike(f'%{search_query}%'),
+                CRM.tags.any(Tags.name.ilike(f'%{search_query}%')),
+                CRM.contactname.ilike(f'%{search_query}%')
+                # Add other fields you want to search through here
+            )
+        )
+
+    contacts = (query
                 .join(Note, isouter=True)  # Use outerjoin if you are using older SQLAlchemy
                 .order_by(CRM.id, desc(Note.created_at))
                 .paginate(page=page, per_page=10, error_out=False))
@@ -433,13 +454,14 @@ def crm():
         if contact.notes:
             latest_notes[contact.id] = contact.notes[0].content
 
-    next_url = url_for('crm', page=contacts.next_num) if contacts.has_next else None
-    prev_url = url_for('crm', page=contacts.prev_num) if contacts.has_prev else None
+    next_url = url_for('crm', page=contacts.next_num, search=search_query) if contacts.has_next else None
+    prev_url = url_for('crm', page=contacts.prev_num, search=search_query) if contacts.has_prev else None
     current_page = contacts.page
     total_pages = contacts.pages
     pages_to_show = 5
     pages = [page for page in range(current_page, min(current_page + pages_to_show, total_pages + 1))]
-    
+    print("Contacts to be rendered: ", contacts.items)
+
     return render_template('crm.html', contacts=contacts.items, latest_notes=latest_notes, next_url=next_url, prev_url=prev_url, pages=pages, total_pages=total_pages, user=current_user, current_page=current_page)
 
 @app.route('/csv/<filename>')

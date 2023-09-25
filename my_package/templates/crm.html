@@ -14,6 +14,12 @@
     </div>
     <div class="crm-inner-page">
         <div class="crm-upper-static">
+            <div class="crm-search-bar">
+                <form action="/CRM" method="get" id="search-form">
+                    <input type="text" name="search" id="search-input" placeholder="Search contacts..." value="{{ request.args.get('search', '') }}">
+                    <button class="search-button" type="submit">Search</button>
+                </form>
+            </div>
             <a href="{{ url_for('new_contact') }}"><button class="add-new-contact-btn">Add New Contact</button></a>
             <form method="POST" enctype="multipart/form-data">
                 <input class="upload-csv" type="file" name="csv" accept=".csv, .xlsx">
@@ -21,7 +27,7 @@
             </form>
         </div>
         <div class="crm-contacts">
-            <table class="contacts-section">
+            <table class="contacts-section" id="contacts-table">
                 <tr class="crm-header">
                     <th class="crm-header-item">Profile</th>
                     <th class="crm-header-item"> Contact</th>
@@ -29,16 +35,15 @@
                     <th class="crm-header-item">Last Note</th>
                     <th class="crm-header-item">Tags</th>
                 </tr>
-                {% if pages and pages[-1] < total_pages %}
                 {% for contact in contacts %}
                     {% if contact.user.organization_id == current_user.organization_id %}
-                <tr class="crm-info-row" data-href="{{ url_for('contact_detail', id=contact.id) }}">
-                    <td class="crm-info">
+                    <tr class="crm-info-row" data-href="{{ url_for('contact_detail', id=contact.id) }}">
+                        <td class="crm-info">
                         {% set initials = '' %}
                         {% if contact.Contact %}
                             {% set names = contact.Contact.split(' ') %}
                             {% set initials = names[0][0].upper() if names[0] else '' %}
-                            {% set initials = initials + (names[1][0].upper() + names[2][0].upper() if names|length > 1 and names[1] else names[0][-1].upper()) %}
+                            {% set initials = initials + (names[1][0].upper() + names[2][0].upper() if names|length > 2 and names[1] else (names[1][0].upper() if names|length > 1 and names[1] else names[0][-1].upper())) %}
                         {% elif contact.contactcompany %}
                             {% set names = contact.contactcompany.split(' ') %}
                             {% set initials = names[0][0].upper() if names[0] else '' %}
@@ -58,8 +63,8 @@
                             </a>
                         </div>
                     </td>
-                    <td class="crm-info"><a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
-                        <a> 
+                    <td class="crm-info">
+                        <a class='contact-link' href="{{ url_for('contact_detail', id=contact.id) }}">
                         {% if contact.contactfirstname and contact.contactlastname%}
                             {{ contact.contactfirstname }} 
                         {% elif contact.contactcompany %}
@@ -89,14 +94,14 @@
             <div class="pagination">
                 <p class="static-page-txt">Page:</p>
                 {% if prev_url %}
-                    <a class="previous-page" href="{{ prev_url }}">Previous</a>
+                    <a class="previous-page" href="{{ prev_url }}&search={{ request.args.get('search', '') }}">Previous</a>
                 {% endif %}
                 {% if current_page > 5 %}
-                <a class="page-item-crm" href="{{ url_for('crm', page=1) }}">1</a>
-                <span class="three-dots">. . .</span>
+                    <a class="page-item-crm" href="{{ url_for('crm', page=1) }}">1</a>
+                    <span class="three-dots">. . .</span>
                 {% endif %}
                 {% for page in pages %}
-                    <a class="page-item-crm" href="{{ url_for('crm', page=page) }}">{{ page }}</a>
+                    <a class="page-item-crm" href="{{ url_for('crm', page=page) }}&search={{ request.args.get('search', '') }}">{{ page }}</a>
                 {% endfor %}
             
                 {% if pages[-1] < total_pages %}
@@ -105,21 +110,145 @@
                 {% endif %} 
             
                 {% if next_url %}
-                    <a class="next-page" href="{{ next_url }}">Next</a>
+                    <a class="next-page" href="{{ next_url }}&search={{ request.args.get('search', '') }}">Next</a>
                 {% endif %}
-                {% endif %}
-                
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(){
-        var rows = document.querySelectorAll(".crm-info-row");
-        rows.forEach(function(row){
-            row.addEventListener("click", function(){
-                window.location.href = this.getAttribute("data-href");
+    var rows = document.querySelectorAll(".crm-info-row");
+    rows.forEach(function(row){
+        row.addEventListener("click", function(){
+            window.location.href = this.getAttribute("data-href");
+        });
+    });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchForm = document.getElementById("search-form");
+        var searchInput = document.getElementById("search-input");
+        var contactsTable = document.getElementById("contacts-table");
+
+        // Load the last search query from localStorage
+        var lastQuery = localStorage.getItem('lastSearchQuery');
+        if (lastQuery) {
+            searchInput.value = lastQuery;
+        }
+
+        // Function to reapply styles or classes
+        function reapplyStyles() {
+            var rows = document.querySelectorAll(".crm-info-row");
+            rows.forEach(function(row) {
+                row.classList.add('crm-info-row');
             });
+
+            var crmInfo = document.querySelectorAll(".crm-info");
+            crmInfo.forEach(function(info) {
+                info.classList.add('crm-info');
+            });
+
+            var contactLink = document.querySelectorAll(".contact-link");
+            contactLink.forEach(function(link) {
+                link.classList.add('contact-link');
+            });
+
+            var contactsSection = document.querySelectorAll(".contacts-section");
+            contactsSection.forEach(function(section) {
+                section.classList.add('contacts-section');
+            });
+            var pagination = document.querySelectorAll(".pagination");
+            pagination.forEach(function(pagination) {
+                pagination.classList.add('pagination');
+            });
+            var staticPageTxt = document.querySelectorAll(".static-page-txt");
+            staticPageTxt.forEach(function(txt) {
+                txt.classList.add('static-page-txt');
+            });
+            var previousPage = document.querySelectorAll(".previous-page");
+            previousPage.forEach(function(page) {
+                page.classList.add('previous-page');
+            });
+            var nextPage = document.querySelectorAll(".next-page");
+            nextPage.forEach(function(page) {
+                page.classList.add('next-page');
+            });
+            var pageItemCrm = document.querySelectorAll(".page-item-crm");
+            pageItemCrm.forEach(function(page) {
+                page.classList.add('page-item-crm');
+            });
+            var threeDots = document.querySelectorAll(".three-dots");
+            threeDots.forEach(function(dots) {
+                dots.classList.add('three-dots');
+            });
+            var totalPage = document.querySelectorAll(".total-pages");
+            totalPage.forEach(function(page) {
+                page.classList.add('total-pages');
+            });
+            var tagBtn = document.querySelectorAll(".tag-btn");
+            tagBtn.forEach(function(btn) {
+                btn.classList.add('tag-btn');
+            });
+            var tagBtnNone = document.querySelectorAll(".tag-btn-none");
+            tagBtnNone.forEach(function(btn) {
+                btn.classList.add('tag-btn-none');
+            });
+            var profilePicture = document.querySelectorAll(".profile-picture");
+            profilePicture.forEach(function(picture) {
+                picture.classList.add('profile-picture');
+            });
+            var contactsLink = document.querySelectorAll(".contacts-link");
+            contactsLink.forEach(function(link) {
+                link.classList.add('contacts-link');
+            });
+            var contacts = document.querySelectorAll(".contacts");
+            contacts.forEach(function(contact) {
+                contact.classList.add('contacts');
+            });
+            var contactsBlock = document.querySelectorAll(".contacts-block");
+            contactsBlock.forEach(function(block) {
+                block.classList.add('contacts-block');
+            });
+        }
+
+        searchForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            var query = searchInput.value;
+
+            // Save the search query to localStorage
+            localStorage.setItem('lastSearchQuery', query);
+
+            // Update the URL to reflect the search query and reset pagination to the first page
+            history.pushState(null, '', '/CRM?search=' + encodeURIComponent(query) + '&page=1');
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/CRM?search=" + encodeURIComponent(query), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(xhr.responseText, "text/html");
+                    var newTable = doc.getElementById("contacts-table");
+                    var newPagination = doc.querySelector(".pagination");
+                    
+                    // Replace the table and pagination
+                    contactsTable.innerHTML = newTable.innerHTML;
+                    document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
+
+                    // Reapply styles or classes
+                    reapplyStyles();
+
+                    // Update pagination links dynamically to include the search query
+                    var paginationLinks = document.querySelectorAll(".page-item-crm, .next-page, .previous-page");
+                    var currentSearchQuery = encodeURIComponent(searchInput.value);  // Get the current search query
+
+                    paginationLinks.forEach(function(link) {
+                        var originalHref = link.getAttribute('href');
+                        link.setAttribute('href', originalHref + '&search=' + currentSearchQuery);
+                    });
+                }
+            };
+            xhr.send();
         });
     });
 </script>
