@@ -266,7 +266,9 @@ def accept_invite(token):
             lastname=lastname,
             phonenumber=phonenumber,
             company=company,
-            organization_id=organization_id
+            organization_id=organization_id,
+            email_confirmed=True,
+            email_confirmed_on=datetime.utcnow()
         )
 
         # Debugging
