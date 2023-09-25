@@ -54,6 +54,12 @@
     <textarea class="notes-txt-input" name="notes" id="notes"></textarea>
     <label class="label-due-date" for="due_date">Due Date:</label>
     <input type="date" name="due_date" id="due_date">
+    <select class="assigned-to" name="assigned_to">
+        <!-- Loop through all users in the organization and create an option for each -->
+        {% for user in organization_users %}
+            <option value="{{ user.id }}">{{ user.firstname }} {{ user.lastname }}</option>
+        {% endfor %}
+    </select>
     <button class="notes-submit-btn" type="submit">Save Note</button>
 </form>
 

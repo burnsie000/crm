@@ -1203,3 +1203,46 @@ input[type=file]::file-selector-button {
 .search-button:focus {
   outline: none;
 }
+.assigned-to {
+  display: inline-block;
+  position: relative;
+  margin-left: 2em;
+  margin-top: 1em;
+  color: white;
+  background-color: rgb(14,14,14);
+  width: 12em;
+  height: 2em;
+  border-color: #F5E400;
+  border-style: solid;
+  left: 5em;
+  top: 5em;
+}
+.assigned-to-tasks {
+  display: block;
+  position: relative;
+  margin-left: 2em;
+  margin-top: 1em;
+  color: white;
+  background-color: rgb(14,14,14);
+  width: 10em;
+  height: 2em;
+  border-color: #F5E400;
+  border-style: solid;
+  left: 5em;
+  justify-content: center;
+  text-align: center;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 1em;
+}
+.assigned-to-selector {
+  background-color: transparent;
+  color: white;
+  border: transparent;
+}
+.assigned-to-selector:focus {
+  background-color: transparent;
+  color: white;
+  border: transparent;
+  outline: none;
+}

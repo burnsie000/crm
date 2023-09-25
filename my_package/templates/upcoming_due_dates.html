@@ -14,9 +14,18 @@
     </div>
     <div class="crm-inner-page">
         <div class="crm-upper-static">
-            
+                       
         </div>
         <div class="crm-contacts">
+            <form class="assigned-to-tasks" method="get" action="{{ url_for('upcoming_due_dates') }}">
+                <select class="assigned-to-selector" name="user_id" onchange="this.form.submit()">
+                    <option value="all" {% if selected_user_id == 'all' %}selected{% endif %}>All Users</option>
+                    {% for user in all_users %}
+                    <option value="{{ user.id }}" {% if selected_user_id|string == user.id|string %}selected{% endif %}>{{ user.firstname }} {{ user.lastname }}</option>
+
+                    {% endfor %}
+                </select>
+            </form> 
             <table class="contacts-section">
                 <tr class="crm-header">
                     <th class="crm-header-item">Profile</th>

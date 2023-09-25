@@ -72,3 +72,4 @@ class Note(db.Model):
     due_date = db.Column(db.DateTime(timezone=True), nullable=True)
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     organization = db.relationship('Organization', back_populates='notes')
+    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))

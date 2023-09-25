@@ -16,7 +16,7 @@ from datetime import datetime
 from math import ceil
 import smtplib
 from email.mime.text import MIMEText
-
+from collections import defaultdict
 
 app = Flask(__name__)
 
@@ -146,14 +146,19 @@ def upcoming_due_dates():
     current_time = datetime.utcnow()
     
     page = request.args.get('page', 1, type=int)
+    selected_user_id = request.args.get('user_id', 'all')
     per_page = 10  # Number of items per page
 
-    # Query to join CRM and Note, filter by organization_id and due date.
+    # Base query
     query = (db.session.query(CRM, Note)
              .join(Note, Note.contact_id == CRM.id)
              .filter(Note.due_date > current_time)
              .filter(CRM.organization_id == current_user.organization_id)
              .order_by(Note.due_date.asc()))
+
+    # If a specific user is selected
+    if selected_user_id != 'all':
+        query = query.filter(Note.assigned_to == selected_user_id)
 
     # Pagination
     items = query.offset((page - 1) * per_page).limit(per_page).all()
@@ -164,8 +169,11 @@ def upcoming_due_dates():
     pages = list(range(1, total_pages + 1))
 
     # Additional code for pagination links
-    next_url = url_for('upcoming_due_dates', page=page + 1) if page < total_pages else None
-    prev_url = url_for('upcoming_due_dates', page=page - 1) if page > 1 else None
+    next_url = url_for('upcoming_due_dates', page=page + 1, user_id=selected_user_id) if page < total_pages else None
+    prev_url = url_for('upcoming_due_dates', page=page - 1, user_id=selected_user_id) if page > 1 else None
+
+    # Fetch all users in the organization for the dropdown
+    all_users = User.query.filter_by(organization_id=current_user.organization_id).all()
 
     return render_template('upcoming_due_dates.html', 
                            contacts_with_due_dates=items, 
@@ -174,8 +182,9 @@ def upcoming_due_dates():
                            total_pages=total_pages,
                            current_page=page,
                            pages=pages,
+                           all_users=all_users,
+                           selected_user_id=selected_user_id,
                            user=current_user)
-
 
 s = URLSafeTimedSerializer(app.secret_key)
 def send_email(subject, recipient, body):
@@ -346,12 +355,14 @@ def save_notes(id):
     # Check if the contact belongs to the same organization as the current user
     if contact.organization_id == current_user.organization_id:
         due_date_str = request.form.get('due_date')
+        assigned_to_user_id = request.form.get('assigned_to')
         due_date = datetime.strptime(due_date_str, '%Y-%m-%d') if due_date_str else None
         new_note = Note(
             content=request.form.get('notes'),
             contact_id=id,
             due_date=due_date,
-            organization_id=current_user.organization_id  # new line
+            organization_id=current_user.organization_id,
+            assigned_to=assigned_to_user_id  # new line
         )
         db.session.add(new_note)
         db.session.commit()
@@ -366,7 +377,8 @@ def save_notes(id):
 def contact_detail(id):
     contact = CRM.query.get_or_404(id)
     notes = Note.query.filter_by(contact_id=id, organization_id=current_user.organization_id).all()
-    return render_template('contact_detail.html', contact=contact, notes=notes, user=current_user)
+    organization_users = User.query.filter_by(organization_id=current_user.organization_id).all()
+    return render_template('contact_detail.html', contact=contact, notes=notes, user=current_user, organization_users=organization_users)
 
 
 @app.route('/CRM', methods=['GET', 'POST'])
