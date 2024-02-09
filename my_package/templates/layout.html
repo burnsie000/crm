@@ -37,21 +37,21 @@
 
   <body>
     <header>
-      <div class="menu-container">
+      <div class="menu-container" id="menuContainer">
         <div>
-          <a class="brand-name nav-link" href="/">X CRM</a>
+          <a class="brand-name nav-link" href="/" id="navLink">X CRM</a>
         </div>
         <ul class="nav-lists">
             {% if user.is_authenticated %}
             <li class="nav-list">
-              <a class="nav-link active" href="/CRM">CRM</a>
+              <a class="nav-link active" href="/CRM" id="navLink">CRM</a>
             </li>
             <li class="nav-list">
-              <a class='nav-link active' href="/auth/logout">Log Out</a>
+              <a class='nav-link active' href="/auth/logout" id="navLink">Log Out</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="bi bi-person-circle"></i>
+                <i class="bi bi-person-circle" id="accountPicture"></i>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <h3 class="account-dropdown-greeting">Hello, {{ user.firstname }}</h3>
@@ -65,10 +65,10 @@
             </li>
             {% else %}
             <li class="nav-list">
-              <a class='nav-link active' href="/auth/login">Log In</a>
+              <a class='nav-link active' href="/auth/login" id="navLink">Log In</a>
             </li>
             <li class="nav-list">
-              <a class="nav-link active" href="/auth/sign-up">
+              <a class="nav-link active" href="/auth/sign-up" id="navLink">
                   Sign Up
               </a>
             </li>

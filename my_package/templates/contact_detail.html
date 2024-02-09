@@ -7,10 +7,24 @@
     </form>
 </div>
 <div class="contact-details-div">
-    {% set names = contact.Contact.split(" ") %}
-    {% set initials = names[0][0].upper() if names[0] else '' %}
-    {% set second_initial = names[1][0].upper() if names[1] and names[1][0].isalpha() else '' %}
-    {% set initials = initials + second_initial if names|length > 1 else initials %}
+    {% set initials = '' %}
+                        {% if contact.Contact %}
+                            {% set names = contact.Contact.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper() + names[2][0].upper() if names|length > 2 and names[1] else (names[1][0].upper() if names|length > 1 and names[1] else names[0][-1].upper())) %}
+                        {% elif contact.contactcompany %}
+                            {% set names = contact.contactcompany.split(' ') %}
+                            {% set initials = names[0][0].upper() if names[0] else '' %}
+                            {% set initials = initials + (names[1][0].upper())%}
+                        {% elif contact.contactfirstname and contact.contactlastname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactlastname[0].upper() %}
+                        {% elif contact.contactfirstname %}
+                            {% set initials = contact.contactfirstname[0].upper() + contact.contactfirstname[-1].upper() %}
+                        {% elif contact.contactlastname %}
+                            {% set initials = contact.contactlastname[0].upper() + contact.contactlastname[-1].upper() %}
+                        {% else %}
+                            {% set initials = 'XX' %}
+                        {% endif %}   
     <div class="profile-picture profile-picture-details">{{ initials }}</div>
     <div class="contact-details-txt">
         <h1 class="contact-details-header">Contact Details</h1>
